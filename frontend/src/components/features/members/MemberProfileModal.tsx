@@ -1,0 +1,170 @@
+'use client'
+
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
+import { Phone, Mail, MapPin, Calendar, Droplets, Network } from 'lucide-react'
+import type { User } from '@/types/user'
+import { mockMinistries, mockCells } from '@/lib/mocks'
+import { formatDate } from '@/lib/dateUtils'
+
+const statusLabels = {
+  active: { label: 'Ativo', className: 'bg-emerald-50 text-emerald-700' },
+  inactive: { label: 'Inativo', className: 'bg-gray-100 text-gray-600' },
+  visitor: { label: 'Visitante', className: 'bg-blue-50 text-blue-700' },
+}
+
+const roleLabels: Record<string, string> = {
+  member: 'Membro',
+  leader: 'Líder',
+  pastor: 'Pastor',
+  deacon: 'Diácono',
+  elder: 'Ancião',
+}
+
+interface MemberProfileModalProps {
+  member: User | null
+  open: boolean
+  onOpenChange: (open: boolean) => void
+}
+
+export function MemberProfileModal({ member, open, onOpenChange }: MemberProfileModalProps) {
+  if (!member) return null
+
+  const statusCfg = statusLabels[member.status]
+  const cell = mockCells.find((c) => c.id === member.cell_id)
+  const ministries = mockMinistries.filter((m) => member.ministry_ids.includes(m.id))
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Perfil do Membro</DialogTitle>
+        </DialogHeader>
+
+        <div className="space-y-5">
+          {/* Avatar + basic info */}
+          <div className="flex items-center gap-4">
+            <Avatar className="h-16 w-16">
+              <AvatarImage src={member.avatar_url} />
+              <AvatarFallback className="bg-blue-100 text-blue-700 text-lg font-bold">
+                {member.name.slice(0, 2).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">{member.name}</h3>
+              <p className="text-sm text-gray-500">{roleLabels[member.role]}</p>
+              <div className="mt-1 flex items-center gap-2">
+                <Badge className={statusCfg.className}>{statusCfg.label}</Badge>
+                {member.baptized && (
+                  <Badge className="bg-sky-50 text-sky-700">
+                    <Droplets className="mr-1 h-3 w-3" /> Batizado
+                  </Badge>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Contact */}
+          <div className="space-y-2">
+            <h4 className="text-xs font-semibold uppercase tracking-wide text-gray-400">
+              Contato
+            </h4>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 text-sm text-gray-700">
+                <Mail className="h-4 w-4 text-gray-400" />
+                {member.email}
+              </div>
+              {member.phone && (
+                <div className="flex items-center gap-2 text-sm text-gray-700">
+                  <Phone className="h-4 w-4 text-gray-400" />
+                  {member.phone}
+                </div>
+              )}
+              {member.address && (
+                <div className="flex items-center gap-2 text-sm text-gray-700">
+                  <MapPin className="h-4 w-4 text-gray-400" />
+                  {member.address}, {member.city} — {member.state}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Personal */}
+          <div className="grid grid-cols-2 gap-4">
+            {member.birth_date && (
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-1">
+                  Nascimento
+                </p>
+                <p className="text-sm text-gray-700 flex items-center gap-1">
+                  <Calendar className="h-3.5 w-3.5 text-gray-400" />
+                  {formatDate(member.birth_date)}
+                </p>
+              </div>
+            )}
+            {member.baptism_date && (
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-1">
+                  Batismo
+                </p>
+                <p className="text-sm text-gray-700 flex items-center gap-1">
+                  <Droplets className="h-3.5 w-3.5 text-sky-400" />
+                  {formatDate(member.baptism_date)}
+                </p>
+              </div>
+            )}
+            {cell && (
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-1">
+                  Célula
+                </p>
+                <p className="text-sm text-gray-700 flex items-center gap-1">
+                  <Network className="h-3.5 w-3.5 text-gray-400" />
+                  {cell.name}
+                </p>
+              </div>
+            )}
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-1">
+                Membro desde
+              </p>
+              <p className="text-sm text-gray-700">{formatDate(member.joined_at)}</p>
+            </div>
+          </div>
+
+          {ministries.length > 0 && (
+            <>
+              <Separator />
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-2">
+                  Ministérios
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {ministries.map((m) => (
+                    <Badge
+                      key={m.id}
+                      style={{ backgroundColor: `${m.color}15`, color: m.color }}
+                    >
+                      {m.name}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+}
