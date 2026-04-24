@@ -1,19 +1,20 @@
-'use client'
+'use client';
 
-import Image from 'next/image'
-import { usePathname } from 'next/navigation'
-import { Menu } from 'lucide-react'
-import { useSidebarStore } from '@/store/useSidebarStore'
-import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Menu } from 'lucide-react';
+import Image from 'next/image';
+import { usePathname } from 'next/navigation';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+} from '@/components/ui/dropdown-menu';
+import { useSidebarStore } from '@/store/useSidebarStore';
 
 const pageTitles: Record<string, string> = {
   '/dashboard': 'Dashboard',
@@ -23,15 +24,14 @@ const pageTitles: Record<string, string> = {
   '/cells': 'Células',
   '/finance': 'Financeiro',
   '/settings': 'Configurações',
-}
+};
 
 export function Header() {
-  const pathname = usePathname()
-  const { toggle } = useSidebarStore()
+  const pathname = usePathname();
+  const { toggle } = useSidebarStore();
 
-  const pageTitle = Object.entries(pageTitles).find(([path]) =>
-    pathname.startsWith(path),
-  )?.[1] ?? 'ChurchFlow'
+  const pageTitle =
+    Object.entries(pageTitles).find(([path]) => pathname.startsWith(path))?.[1] ?? 'ChurchFlow';
 
   return (
     <header className="flex h-16 items-center gap-4 border-b border-gray-200 bg-white px-6">
@@ -69,11 +69,7 @@ export function Header() {
 
         <div className="h-6 w-px bg-gray-200 hidden sm:block" />
 
-
-
-
-
-              <DropdownMenu>
+        <DropdownMenu>
           <DropdownMenuTrigger className="flex items-center gap-2 rounded-lg p-1 hover:bg-gray-100 transition-colors focus-visible:outline-none">
             <Avatar className="h-8 w-8">
               <AvatarImage />
@@ -85,10 +81,11 @@ export function Header() {
               <p className="text-sm font-medium text-gray-900">Adilson Rossi</p>
               <p className="text-xs text-gray-500">Pastor</p>
             </div>
-
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuLabel>Minha conta</DropdownMenuLabel>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>Minha conta</DropdownMenuLabel>
+            </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem>Perfil</DropdownMenuItem>
             <DropdownMenuItem>Configurações</DropdownMenuItem>
@@ -98,5 +95,5 @@ export function Header() {
         </DropdownMenu>
       </div>
     </header>
-  )
+  );
 }

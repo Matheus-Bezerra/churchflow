@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.4.13/schema.json",
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
@@ -17,20 +17,12 @@
     "rules": {
       "recommended": true,
       "suspicious": {
-        "noConsoleLog": "warn"
+        "noConsole": { "level": "warn", "options": { "allow": ["log"] } }
       }
     }
   },
-  "organizeImports": {
-    "enabled": true
-  },
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "files": {
-    "ignore": [
-      "node_modules",
-      ".next",
-      "dist",
-      "build",
-      "__mocks__"
-    ]
+    "includes": ["**", "!**/node_modules", "!**/.next", "!**/dist", "!**/build", "!**/__mocks__"]
   }
 }
