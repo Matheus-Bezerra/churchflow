@@ -70,9 +70,14 @@ export default function MembersPage() {
         <StatsCard
           title="Total"
           value={stats?.total_members ?? 0}
+          description={`${stats?.active_members ?? 0} ativos`}
           icon={Users}
           iconColor="text-blue-600"
           iconBg="bg-blue-50"
+          trend={{
+            value: `+${stats?.new_members_this_month ?? 0} usuários novos`,
+            positive: true,
+          }}
         />
         <StatsCard
           title="Ativos"
@@ -91,6 +96,7 @@ export default function MembersPage() {
         <StatsCard
           title="Batizados"
           value={stats?.baptized ?? 0}
+          description="Membros batizados"
           icon={Droplets}
           iconColor="text-sky-600"
           iconBg="bg-sky-50"

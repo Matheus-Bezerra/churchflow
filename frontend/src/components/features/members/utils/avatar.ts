@@ -1,12 +1,22 @@
 export const PRESET_SEEDS = [
-  'alex',
-  'sam',
-  'jordan',
-  'taylor',
-  'morgan',
-  'casey',
-  'riley',
-  'avery',
+  // Feminino
+  'ana',
+  'beatriz',
+  'camila',
+  'julia',
+  'larissa',
+  'marina',
+  'sofia',
+  'isabela',
+  // Masculino
+  'gabriel',
+  'lucas',
+  'mateus',
+  'daniel',
+  'bruno',
+  'rafael',
+  'leonardo',
+  'thiago',
 ]
 
 export function dicebearUrl(seed: string) {

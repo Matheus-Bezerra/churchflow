@@ -165,7 +165,7 @@ export function CreateScheduleModal({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="flex max-h-[90dvh] max-w-2xl flex-col gap-0 overflow-hidden p-0">
+      <DialogContent className="flex max-h-[90dvh] max-w-2xl flex-col gap-0 overflow-hidden p-0 sm:max-w-3xl">
         <DialogHeader className="shrink-0 border-gray-100 border-b px-6 pt-6 pb-4">
           <DialogTitle className="font-bold text-gray-900 text-xl">
             Nova Escala

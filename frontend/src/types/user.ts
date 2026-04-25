@@ -1,5 +1,14 @@
 export type MemberStatus = 'active' | 'inactive' | 'visitor'
-export type MemberRole = 'member' | 'leader' | 'pastor' | 'deacon' | 'elder'
+export type MemberRoleId = 'member' | 'leader' | 'pastor' | 'deacon' | 'elder'
+export type MemberRole = MemberRoleId | (string & {})
+
+export interface MemberFunction {
+  id: string
+  label: string
+  is_default: boolean
+  created_at: string
+  deleted_at?: string | null
+}
 
 export interface User {
   id: string
@@ -13,6 +22,7 @@ export interface User {
   baptized: boolean
   baptism_date?: string | null
   birth_date?: string
+  is_volunteer?: boolean
   address?: string
   city?: string
   state?: string
@@ -27,8 +37,14 @@ export interface User {
 export interface UserUnavailability {
   id: string
   user_id: string
-  start_date: string
-  end_date: string
+  type: 'period' | 'recurring'
+  // period
+  start_date?: string
+  end_date?: string
+  // recurring
+  day_of_week?: string
+  start_time?: string
+  end_time?: string
   reason?: string
   created_at: string
 }

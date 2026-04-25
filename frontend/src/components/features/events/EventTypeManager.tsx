@@ -67,7 +67,7 @@ export function EventTypeManager({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-sm">
+      <DialogContent className="max-w-sm sm:max-w-3xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 font-semibold text-gray-900">
             <Settings2 className="h-4 w-4" />

@@ -1,12 +1,11 @@
 'use client'
 
+import { Calendar, Network, Plus, UserCheck, Users } from 'lucide-react'
 import { useState } from 'react'
-import { Plus, Network, Users, UserCheck, Calendar } from 'lucide-react'
-import { useCells, useCellsStats } from '@/hooks/queries/useCells'
-import { StatsCard } from '@/components/features/dashboard/StatsCard'
+
 import { CellCard } from '@/components/features/cells/CellCard'
+import { StatsCard } from '@/components/features/dashboard/StatsCard'
 import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton'
 import {
   Dialog,
   DialogContent,
@@ -15,6 +14,8 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useCells, useCellsStats } from '@/hooks/queries/useCells'
 
 export default function CellsPage() {
   const [createOpen, setCreateOpen] = useState(false)
@@ -25,14 +26,14 @@ export default function CellsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Células</h2>
-          <p className="mt-1 text-sm text-gray-500">
+          <h2 className="font-bold text-2xl text-gray-900">Células</h2>
+          <p className="mt-1 text-gray-500 text-sm">
             Gerencie os grupos de crescimento da sua igreja
           </p>
         </div>
         <Button
           onClick={() => setCreateOpen(true)}
-          className="bg-blue-600 hover:bg-blue-700 gap-2"
+          className="gap-2 bg-blue-600 hover:bg-blue-700"
         >
           <Plus className="h-4 w-4" />
           Nova Célula
@@ -77,15 +78,17 @@ export default function CellsPage() {
       {isLoading ? (
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="h-52 rounded-xl" />
+            <Skeleton key={String(i)} className="h-52 rounded-xl" />
           ))}
         </div>
       ) : cells.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-gray-300 bg-white py-16 text-center">
-          <Network className="h-10 w-10 text-gray-300 mb-3" />
-          <p className="text-sm font-medium text-gray-400">Nenhuma célula cadastrada</p>
-          <p className="text-xs text-gray-400 mt-1">
-            Clique em "Nova Célula" para começar
+        <div className="flex flex-col items-center justify-center rounded-xl border border-gray-300 border-dashed bg-white py-16 text-center">
+          <Network className="mb-3 h-10 w-10 text-gray-300" />
+          <p className="font-medium text-gray-400 text-sm">
+            Nenhuma célula cadastrada
+          </p>
+          <p className="mt-1 text-gray-400 text-xs">
+            Clique em &quot;Nova Célula&quot; para começar
           </p>
         </div>
       ) : (
@@ -98,7 +101,7 @@ export default function CellsPage() {
 
       {/* Create placeholder modal */}
       <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-md sm:max-w-3xl">
           <DialogHeader>
             <DialogTitle>Nova Célula</DialogTitle>
           </DialogHeader>

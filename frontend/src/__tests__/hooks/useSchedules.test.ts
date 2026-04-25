@@ -32,6 +32,7 @@ describe('checkConflict', () => {
       {
         id: 'u1',
         user_id: 'user-2',
+        type: 'period',
         start_date: '2026-05-04',
         end_date: '2026-05-04',
         created_at: '2025-04-01T00:00:00Z',
@@ -45,6 +46,7 @@ describe('checkConflict', () => {
       {
         id: 'u2',
         user_id: 'user-2',
+        type: 'period',
         start_date: '2026-05-01',
         end_date: '2026-05-10',
         created_at: '2025-04-01T00:00:00Z',
@@ -58,6 +60,7 @@ describe('checkConflict', () => {
       {
         id: 'u3',
         user_id: 'user-99',
+        type: 'period',
         start_date: '2026-05-04',
         end_date: '2026-05-04',
         created_at: '2025-04-01T00:00:00Z',
@@ -71,6 +74,7 @@ describe('checkConflict', () => {
       {
         id: 'u4',
         user_id: 'user-2',
+        type: 'period',
         start_date: '2026-05-10',
         end_date: '2026-05-20',
         created_at: '2025-04-01T00:00:00Z',
@@ -84,6 +88,7 @@ describe('checkConflict', () => {
       {
         id: 'u5',
         user_id: 'user-2',
+        type: 'period',
         start_date: '2026-04-20',
         end_date: '2026-04-30',
         created_at: '2025-04-01T00:00:00Z',

@@ -17,13 +17,15 @@ async function fetchSchedules(): Promise<ScheduleWithMeta[]> {
     .map((schedule) => {
       const event = mockEvents.find((e) => e.id === schedule.event_id)
       const ministry = mockMinistries.find((m) => m.id === schedule.ministry_id)
-      const hasConflict = checkConflict(schedule, mockUnavailabilities)
-
-      const occurrenceDay = new Date(schedule.event_occurrence_date + 'T00:00:00').toLocaleDateString('pt-BR', { weekday: 'long' })
+      const occurrenceDay = new Date(
+        schedule.event_occurrence_date + 'T00:00:00',
+      ).toLocaleDateString('pt-BR', { weekday: 'long' })
       const matchingSlot = event?.recurrence_slots?.find(
         (slot) => slot.day.toLowerCase() === occurrenceDay.toLowerCase(),
       )
       const eventTime = matchingSlot?.time ?? event?.time
+
+      const hasConflict = checkConflict(schedule, mockUnavailabilities, eventTime)
 
       return {
         ...schedule,

@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/table'
 import { mockCells, mockMinistries } from '@/lib/mocks'
 import type { User } from '@/types/user'
+import { useMemberFunctions } from '@/hooks/queries/useMemberFunctions'
 
 import {
   MEMBER_PAGE_SIZE,
@@ -41,6 +42,12 @@ export function MembersTable({ members, isLoading }: MembersTableProps) {
   const [page, setPage] = useState(1)
   const [selectedMember, setSelectedMember] = useState<User | null>(null)
   const [profileOpen, setProfileOpen] = useState(false)
+  const { data: memberFunctions = [] } = useMemberFunctions()
+
+  const roleLabel = (roleId: string) =>
+    memberFunctions.find((f) => f.id === roleId)?.label ??
+    MEMBER_ROLE_LABELS[roleId] ??
+    roleId
 
   const totalPages = Math.ceil(members.length / MEMBER_PAGE_SIZE)
   const paginated = members.slice(
@@ -139,7 +146,7 @@ export function MembersTable({ members, isLoading }: MembersTableProps) {
                     </TableCell>
                     <TableCell className="hidden lg:table-cell">
                       <span className="text-gray-600 text-sm">
-                        {MEMBER_ROLE_LABELS[member.role]}
+                        {roleLabel(String(member.role))}
                       </span>
                     </TableCell>
                     <TableCell className="hidden xl:table-cell">

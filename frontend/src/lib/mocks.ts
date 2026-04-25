@@ -2,7 +2,7 @@ import type { Cell } from '@/types/church'
 import type { ChurchEvent, EventType } from '@/types/event'
 import type { Ministry, MinistryActivity } from '@/types/ministry'
 import type { RecentActivity, Schedule } from '@/types/schedule'
-import type { DashboardStats, User, UserUnavailability } from '@/types/user'
+import type { DashboardStats, MemberFunction, User, UserUnavailability } from '@/types/user'
 
 // ─── Cells ────────────────────────────────────────────────────────────────────
 
@@ -636,6 +636,7 @@ export const mockUnavailabilities: UserUnavailability[] = [
   {
     id: 'unavail-1',
     user_id: 'user-2',
+    type: 'period',
     start_date: '2026-05-03',
     end_date: '2026-05-03',
     reason: 'Viagem de trabalho',
@@ -644,6 +645,7 @@ export const mockUnavailabilities: UserUnavailability[] = [
   {
     id: 'unavail-2',
     user_id: 'user-3',
+    type: 'period',
     start_date: '2026-05-10',
     end_date: '2026-05-14',
     reason: 'Férias',
@@ -652,6 +654,7 @@ export const mockUnavailabilities: UserUnavailability[] = [
   {
     id: 'unavail-3',
     user_id: 'user-7',
+    type: 'period',
     start_date: '2026-05-24',
     end_date: '2026-05-24',
     reason: 'Compromisso familiar',
@@ -888,6 +891,46 @@ export const mockDashboardStats: DashboardStats = {
   new_members_this_month: 2,
 }
 
+// ─── Member Functions (Roles) ──────────────────────────────────────────────────
+
+export const mockMemberFunctions: MemberFunction[] = [
+  {
+    id: 'member',
+    label: 'Membro',
+    is_default: true,
+    created_at: '2024-01-01T00:00:00Z',
+    deleted_at: null,
+  },
+  {
+    id: 'leader',
+    label: 'Líder',
+    is_default: true,
+    created_at: '2024-01-01T00:00:00Z',
+    deleted_at: null,
+  },
+  {
+    id: 'pastor',
+    label: 'Pastor',
+    is_default: true,
+    created_at: '2024-01-01T00:00:00Z',
+    deleted_at: null,
+  },
+  {
+    id: 'deacon',
+    label: 'Diácono',
+    is_default: true,
+    created_at: '2024-01-01T00:00:00Z',
+    deleted_at: null,
+  },
+  {
+    id: 'elder',
+    label: 'Ancião',
+    is_default: true,
+    created_at: '2024-01-01T00:00:00Z',
+    deleted_at: null,
+  },
+]
+
 // ─── Event Types ──────────────────────────────────────────────────────────────
 
 export const mockEventTypes: EventType[] = [
@@ -1022,14 +1065,53 @@ export const mockEvents: ChurchEvent[] = [
 export function checkConflict(
   schedule: Schedule,
   unavailabilities: UserUnavailability[],
+  scheduleTime?: string,
 ): boolean {
-  const schedDate = new Date(schedule.event_occurrence_date)
+  const schedDate = new Date(schedule.event_occurrence_date + 'T00:00:00')
+  const scheduleDay = schedDate.getDay() // 0=Sun
+  const scheduleMinutes =
+    scheduleTime && /^\d{2}:\d{2}$/.test(scheduleTime)
+      ? parseInt(scheduleTime.slice(0, 2), 10) * 60 +
+        parseInt(scheduleTime.slice(3, 5), 10)
+      : null
+
   return schedule.volunteers.some((v) =>
     unavailabilities.some((u) => {
       if (u.user_id !== v.user_id) return false
-      const start = new Date(u.start_date)
-      const end = new Date(u.end_date)
-      return schedDate >= start && schedDate <= end
+      if (u.type === 'period') {
+        if (!u.start_date || !u.end_date) return false
+        const start = new Date(u.start_date + 'T00:00:00')
+        const end = new Date(u.end_date + 'T23:59:59')
+        return schedDate >= start && schedDate <= end
+      }
+
+      if (u.type === 'recurring') {
+        if (!u.day_of_week) return false
+        const dayIndexMap: Record<string, number> = {
+          Domingo: 0,
+          Segunda: 1,
+          Terça: 2,
+          Quarta: 3,
+          Quinta: 4,
+          Sexta: 5,
+          Sábado: 6,
+        }
+        const unavailDay = dayIndexMap[u.day_of_week] ?? -1
+        if (unavailDay !== scheduleDay) return false
+
+        // If no time info, treat as all-day recurring unavailability
+        if (!u.start_time || !u.end_time || scheduleMinutes == null) return true
+
+        const startMin =
+          parseInt(u.start_time.slice(0, 2), 10) * 60 +
+          parseInt(u.start_time.slice(3, 5), 10)
+        const endMin =
+          parseInt(u.end_time.slice(0, 2), 10) * 60 +
+          parseInt(u.end_time.slice(3, 5), 10)
+        return scheduleMinutes >= startMin && scheduleMinutes <= endMin
+      }
+
+      return false
     }),
   )
 }
@@ -1038,11 +1120,53 @@ export function checkVolunteerConflict(
   userId: string,
   date: string,
   unavailabilities: UserUnavailability[],
+  scheduleTime?: string,
 ): boolean {
-  const d = new Date(date)
+  const d = new Date(date + 'T00:00:00')
+  const scheduleDay = d.getDay()
+  const scheduleMinutes =
+    scheduleTime && /^\d{2}:\d{2}$/.test(scheduleTime)
+      ? parseInt(scheduleTime.slice(0, 2), 10) * 60 +
+        parseInt(scheduleTime.slice(3, 5), 10)
+      : null
+
   return unavailabilities.some((u) => {
     if (u.user_id !== userId) return false
-    return d >= new Date(u.start_date) && d <= new Date(u.end_date)
+
+    if (u.type === 'period') {
+      if (!u.start_date || !u.end_date) return false
+      return (
+        d >= new Date(u.start_date + 'T00:00:00') &&
+        d <= new Date(u.end_date + 'T23:59:59')
+      )
+    }
+
+    if (u.type === 'recurring') {
+      if (!u.day_of_week) return false
+      const dayIndexMap: Record<string, number> = {
+        Domingo: 0,
+        Segunda: 1,
+        Terça: 2,
+        Quarta: 3,
+        Quinta: 4,
+        Sexta: 5,
+        Sábado: 6,
+      }
+      const unavailDay = dayIndexMap[u.day_of_week] ?? -1
+      if (unavailDay !== scheduleDay) return false
+
+      if (!u.start_time || !u.end_time || scheduleMinutes == null) return true
+
+      const startMin =
+        parseInt(u.start_time.slice(0, 2), 10) * 60 +
+        parseInt(u.start_time.slice(3, 5), 10)
+      const endMin =
+        parseInt(u.end_time.slice(0, 2), 10) * 60 +
+        parseInt(u.end_time.slice(3, 5), 10)
+      return scheduleMinutes >= startMin && scheduleMinutes <= endMin
+    }
+
+    return false
   })
 }
 
