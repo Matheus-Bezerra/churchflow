@@ -1,8 +1,17 @@
 'use client'
 
-import { Users, Clock, MapPin, MoreHorizontal, Pencil, Trash2, UserPlus } from 'lucide-react'
+import {
+  Clock,
+  MapPin,
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+  UserPlus,
+  Users,
+} from 'lucide-react'
+
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Card, CardContent } from '@/components/ui/card'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,39 +23,36 @@ import { useLeaderName } from '@/hooks/queries/useCells'
 import { mockUsers } from '@/lib/mocks'
 import type { Cell } from '@/types/church'
 
+import { DAY_COLORS } from './constants'
+
 interface CellCardProps {
   cell: Cell
-}
-
-const DAY_COLORS: Record<string, { bg: string; text: string }> = {
-  Domingo: { bg: 'bg-orange-50', text: 'text-orange-700' },
-  Segunda: { bg: 'bg-blue-50', text: 'text-blue-700' },
-  Terça: { bg: 'bg-emerald-50', text: 'text-emerald-700' },
-  Quarta: { bg: 'bg-purple-50', text: 'text-purple-700' },
-  Quinta: { bg: 'bg-pink-50', text: 'text-pink-700' },
-  Sexta: { bg: 'bg-amber-50', text: 'text-amber-700' },
-  Sábado: { bg: 'bg-sky-50', text: 'text-sky-700' },
 }
 
 export function CellCard({ cell }: CellCardProps) {
   const leaderName = useLeaderName(cell.leader_id)
   const leader = mockUsers.find((u) => u.id === cell.leader_id)
-  const dayStyle = DAY_COLORS[cell.meeting_day] ?? { bg: 'bg-gray-50', text: 'text-gray-600' }
+  const dayStyle = DAY_COLORS[cell.meeting_day] ?? {
+    bg: 'bg-gray-50',
+    text: 'text-gray-600',
+  }
 
   return (
-    <Card className="border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+    <Card className="border border-gray-200 shadow-sm transition-shadow hover:shadow-md">
       <CardContent className="p-5">
         {/* Header */}
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-semibold text-gray-900 truncate">{cell.name}</h3>
-            <div className="flex items-center gap-1.5 mt-1">
+        <div className="mb-4 flex items-start justify-between">
+          <div className="min-w-0 flex-1">
+            <h3 className="truncate font-semibold text-gray-900 text-sm">
+              {cell.name}
+            </h3>
+            <div className="mt-1 flex items-center gap-1.5">
               <span
-                className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium ${dayStyle.bg} ${dayStyle.text}`}
+                className={`inline-flex items-center rounded-md px-2 py-0.5 font-medium text-xs ${dayStyle.bg} ${dayStyle.text}`}
               >
                 {cell.meeting_day}
               </span>
-              <span className="flex items-center gap-1 text-xs text-gray-400">
+              <span className="flex items-center gap-1 text-gray-400 text-xs">
                 <Clock className="h-3 w-3" />
                 {cell.meeting_time}
               </span>
@@ -76,7 +82,7 @@ export function CellCard({ cell }: CellCardProps) {
 
         {/* Address */}
         {cell.address && (
-          <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-4">
+          <div className="mb-4 flex items-center gap-1.5 text-gray-500 text-xs">
             <MapPin className="h-3.5 w-3.5 shrink-0 text-gray-400" />
             <span className="truncate">{cell.address}</span>
           </div>
@@ -84,24 +90,28 @@ export function CellCard({ cell }: CellCardProps) {
 
         {/* Leader */}
         {leader && (
-          <div className="flex items-center gap-2 mb-4">
+          <div className="mb-4 flex items-center gap-2">
             <Avatar className="h-7 w-7">
-              <AvatarFallback className="text-[10px] bg-blue-50 text-blue-700 font-semibold">
+              <AvatarFallback className="bg-blue-50 font-semibold text-[10px] text-blue-700">
                 {leaderName.slice(0, 2).toUpperCase()}
               </AvatarFallback>
             </Avatar>
             <div className="min-w-0">
-              <p className="text-xs font-medium text-gray-700 truncate">{leaderName}</p>
+              <p className="truncate font-medium text-gray-700 text-xs">
+                {leaderName}
+              </p>
               <p className="text-[11px] text-gray-400">Líder da Célula</p>
             </div>
           </div>
         )}
 
         {/* Member count */}
-        <div className="flex items-center gap-1.5 pt-3 border-t border-gray-100">
+        <div className="flex items-center gap-1.5 border-gray-100 border-t pt-3">
           <Users className="h-4 w-4 text-gray-400" />
-          <span className="text-sm font-medium text-gray-700">{cell.member_count}</span>
-          <span className="text-xs text-gray-400">membros</span>
+          <span className="font-medium text-gray-700 text-sm">
+            {cell.member_count}
+          </span>
+          <span className="text-gray-400 text-xs">membros</span>
         </div>
       </CardContent>
     </Card>

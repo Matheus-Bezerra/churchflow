@@ -30,14 +30,26 @@ export function formatBirthday(dateString: string): string {
 }
 
 export function getDaysUntilBirthday(birthDateString: string): number {
-  const today = new Date()
-  const birth = new Date(birthDateString + 'T00:00:00')
-  const thisYearBirthday = new Date(today.getFullYear(), birth.getMonth(), birth.getDate())
+  const todayMidnight = new Date()
+  todayMidnight.setHours(0, 0, 0, 0)
 
-  if (thisYearBirthday < today) {
-    thisYearBirthday.setFullYear(today.getFullYear() + 1)
+  const birth = new Date(birthDateString + 'T00:00:00')
+  const thisYearBirthday = new Date(
+    todayMidnight.getFullYear(),
+    birth.getMonth(),
+    birth.getDate(),
+  )
+
+  if (thisYearBirthday < todayMidnight) {
+    thisYearBirthday.setFullYear(todayMidnight.getFullYear() + 1)
   }
 
-  const diff = thisYearBirthday.getTime() - today.getTime()
-  return Math.ceil(diff / (1000 * 60 * 60 * 24))
+  const diff = thisYearBirthday.getTime() - todayMidnight.getTime()
+  return Math.round(diff / (1000 * 60 * 60 * 24))
+}
+
+export function formatBirthdayCountdown(daysUntil: number): string {
+  if (daysUntil === 0) return 'Hoje'
+  if (daysUntil === 1) return 'Amanhã'
+  return `Em ${daysUntil} dias`
 }

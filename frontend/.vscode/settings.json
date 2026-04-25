@@ -1,37 +1,61 @@
 {
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "biomejs.biome",
-  "[javascript]": {
-    "editor.defaultFormatter": "biomejs.biome"
-  },
-  "[javascriptreact]": {
-    "editor.defaultFormatter": "biomejs.biome"
-  },
-  "[typescript]": {
-    "editor.defaultFormatter": "biomejs.biome"
-  },
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "biomejs.biome"
-  }
-}
-{
-  "editor.defaultFormatter": "biomejs.biome",
-  "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "quickfix.biome": "explicit",
+    "source.fixAll.biome": "explicit",
     "source.organizeImports.biome": "explicit"
   },
   "[typescript]": {
     "editor.defaultFormatter": "biomejs.biome"
   },
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "biomejs.biome"
-  },
   "[javascript]": {
     "editor.defaultFormatter": "biomejs.biome"
   },
-  "[javascriptreact]": {
+  "[typescriptreact]": {
     "editor.defaultFormatter": "biomejs.biome"
   },
-  "extensions.recommendations": ["biomejs.biome"]
+  "[json]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "cSpell.language": "en,pt",
+  "cSpell.words": [
+    "Asaas",
+    "belluno",
+    "Belluno",
+    "brandmark",
+    "brindefly",
+    "Brindeflyer",
+    "childrens",
+    "cnpj",
+    "cooldown",
+    "ECOMMERCE",
+    "Embla",
+    "faqs",
+    "Focusable",
+    "frenet",
+    "generouted",
+    "hipercard",
+    "KONDUTO",
+    "Kubb",
+    "mastercard",
+    "nuqs",
+    "officedocument",
+    "openxmlformats",
+    "pinterest",
+    "selectables",
+    "skus",
+    "Skus",
+    "somarcas",
+    "sonner",
+    "spreadsheetml",
+    "termico",
+    "ultrawide",
+    "unconfigured",
+    "Unconfigured",
+    "usehooks",
+    "whatsapp",
+    "youtube"
+  ]
 }

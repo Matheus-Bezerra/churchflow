@@ -1,7 +1,8 @@
 'use client'
 
+import { Eye, MoreHorizontal, Pencil, UserCheck, UserX } from 'lucide-react'
 import { useState } from 'react'
-import { MoreHorizontal, Eye, Pencil, UserX, UserCheck } from 'lucide-react'
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -12,6 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Skeleton } from '@/components/ui/skeleton'
 import {
   Table,
   TableBody,
@@ -20,39 +22,31 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Skeleton } from '@/components/ui/skeleton'
-import { MemberProfileModal } from './MemberProfileModal'
-import { mockMinistries, mockCells } from '@/lib/mocks'
+import { mockCells, mockMinistries } from '@/lib/mocks'
 import type { User } from '@/types/user'
 
-const statusConfig = {
-  active: { label: 'Ativo', className: 'bg-emerald-50 text-emerald-700 hover:bg-emerald-50' },
-  inactive: { label: 'Inativo', className: 'bg-gray-100 text-gray-600 hover:bg-gray-100' },
-  visitor: { label: 'Visitante', className: 'bg-blue-50 text-blue-700 hover:bg-blue-50' },
-}
-
-const roleLabels: Record<string, string> = {
-  member: 'Membro',
-  leader: 'Líder',
-  pastor: 'Pastor',
-  deacon: 'Diácono',
-  elder: 'Ancião',
-}
+import {
+  MEMBER_PAGE_SIZE,
+  MEMBER_ROLE_LABELS,
+  MEMBER_STATUS_CONFIG,
+} from './constants/labels'
+import { MemberProfileModal } from './MemberProfileModal'
 
 interface MembersTableProps {
   members: User[]
   isLoading: boolean
 }
 
-const PAGE_SIZE = 8
-
 export function MembersTable({ members, isLoading }: MembersTableProps) {
   const [page, setPage] = useState(1)
   const [selectedMember, setSelectedMember] = useState<User | null>(null)
   const [profileOpen, setProfileOpen] = useState(false)
 
-  const totalPages = Math.ceil(members.length / PAGE_SIZE)
-  const paginated = members.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+  const totalPages = Math.ceil(members.length / MEMBER_PAGE_SIZE)
+  const paginated = members.slice(
+    (page - 1) * MEMBER_PAGE_SIZE,
+    page * MEMBER_PAGE_SIZE,
+  )
 
   function openProfile(member: User) {
     setSelectedMember(member)
@@ -63,7 +57,10 @@ export function MembersTable({ members, isLoading }: MembersTableProps) {
     return (
       <div className="space-y-2">
         {Array.from({ length: 6 }).map((_, i) => (
-          <Skeleton key={i} className="h-14 w-full rounded-lg" />
+          <Skeleton
+            key={`skeleton-member-${i.toString()}`}
+            className="h-14 w-full rounded-lg"
+          />
         ))}
       </div>
     )
@@ -71,29 +68,44 @@ export function MembersTable({ members, isLoading }: MembersTableProps) {
 
   return (
     <>
-      <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
+      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
         <Table>
           <TableHeader>
             <TableRow className="bg-gray-50">
-              <TableHead className="font-semibold text-gray-600">Membro</TableHead>
-              <TableHead className="font-semibold text-gray-600 hidden md:table-cell">Contato</TableHead>
-              <TableHead className="font-semibold text-gray-600 hidden lg:table-cell">Função</TableHead>
-              <TableHead className="font-semibold text-gray-600 hidden xl:table-cell">Ministérios</TableHead>
-              <TableHead className="font-semibold text-gray-600 hidden xl:table-cell">Célula</TableHead>
-              <TableHead className="font-semibold text-gray-600">Status</TableHead>
+              <TableHead className="font-semibold text-gray-600">
+                Membro
+              </TableHead>
+              <TableHead className="hidden font-semibold text-gray-600 md:table-cell">
+                Contato
+              </TableHead>
+              <TableHead className="hidden font-semibold text-gray-600 lg:table-cell">
+                Função
+              </TableHead>
+              <TableHead className="hidden font-semibold text-gray-600 xl:table-cell">
+                Ministérios
+              </TableHead>
+              <TableHead className="hidden font-semibold text-gray-600 xl:table-cell">
+                Célula
+              </TableHead>
+              <TableHead className="font-semibold text-gray-600">
+                Status
+              </TableHead>
               <TableHead className="w-10" />
             </TableRow>
           </TableHeader>
           <TableBody>
             {paginated.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-12 text-gray-400">
+                <TableCell
+                  colSpan={7}
+                  className="py-12 text-center text-gray-400"
+                >
                   Nenhum membro encontrado.
                 </TableCell>
               </TableRow>
             ) : (
               paginated.map((member) => {
-                const statusCfg = statusConfig[member.status]
+                const statusCfg = MEMBER_STATUS_CONFIG[member.status]
                 const cell = mockCells.find((c) => c.id === member.cell_id)
                 const ministries = mockMinistries.filter((m) =>
                   member.ministry_ids.includes(m.id),
@@ -105,24 +117,30 @@ export function MembersTable({ members, isLoading }: MembersTableProps) {
                       <div className="flex items-center gap-3">
                         <Avatar className="h-9 w-9">
                           <AvatarImage src={member.avatar_url} />
-                          <AvatarFallback className="bg-blue-100 text-blue-700 text-xs font-semibold">
+                          <AvatarFallback className="bg-blue-100 font-semibold text-blue-700 text-xs">
                             {member.name.slice(0, 2).toUpperCase()}
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <p className="text-sm font-medium text-gray-900">{member.name}</p>
-                          <p className="text-xs text-gray-400 md:hidden">{member.email}</p>
+                          <p className="font-medium text-gray-900 text-sm">
+                            {member.name}
+                          </p>
+                          <p className="text-gray-400 text-xs md:hidden">
+                            {member.email}
+                          </p>
                         </div>
                       </div>
                     </TableCell>
                     <TableCell className="hidden md:table-cell">
                       <div>
-                        <p className="text-sm text-gray-700">{member.email}</p>
-                        <p className="text-xs text-gray-400">{member.phone}</p>
+                        <p className="text-gray-700 text-sm">{member.email}</p>
+                        <p className="text-gray-400 text-xs">{member.phone}</p>
                       </div>
                     </TableCell>
                     <TableCell className="hidden lg:table-cell">
-                      <span className="text-sm text-gray-600">{roleLabels[member.role]}</span>
+                      <span className="text-gray-600 text-sm">
+                        {MEMBER_ROLE_LABELS[member.role]}
+                      </span>
                     </TableCell>
                     <TableCell className="hidden xl:table-cell">
                       <div className="flex flex-wrap gap-1">
@@ -131,7 +149,10 @@ export function MembersTable({ members, isLoading }: MembersTableProps) {
                             key={m.id}
                             variant="secondary"
                             className="text-xs"
-                            style={{ backgroundColor: `${m.color}18`, color: m.color }}
+                            style={{
+                              backgroundColor: `${m.color}18`,
+                              color: m.color,
+                            }}
                           >
                             {m.name.split(' ')[0]}
                           </Badge>
@@ -144,10 +165,14 @@ export function MembersTable({ members, isLoading }: MembersTableProps) {
                       </div>
                     </TableCell>
                     <TableCell className="hidden xl:table-cell">
-                      <span className="text-sm text-gray-500">{cell?.name ?? '—'}</span>
+                      <span className="text-gray-500 text-sm">
+                        {cell?.name ?? '—'}
+                      </span>
                     </TableCell>
                     <TableCell>
-                      <Badge className={statusCfg.className}>{statusCfg.label}</Badge>
+                      <Badge className={statusCfg.className}>
+                        {statusCfg.label}
+                      </Badge>
                     </TableCell>
                     <TableCell>
                       <DropdownMenu>
@@ -189,7 +214,7 @@ export function MembersTable({ members, isLoading }: MembersTableProps) {
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-between pt-2">
-          <p className="text-sm text-gray-500">
+          <p className="text-gray-500 text-sm">
             {members.length} membros · Página {page} de {totalPages}
           </p>
           <div className="flex gap-2">

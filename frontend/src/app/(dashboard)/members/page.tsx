@@ -1,13 +1,11 @@
 'use client'
 
+import { Droplets, Search, UserCheck, UserPlus, Users } from 'lucide-react'
 import { useState } from 'react'
-import { UserPlus, Users, UserCheck, Droplets } from 'lucide-react'
-import { Search } from 'lucide-react'
-import { useMembers } from '@/hooks/queries/useMembers'
-import { useDashboardStats } from '@/hooks/queries/useDashboardStats'
+
 import { StatsCard } from '@/components/features/dashboard/StatsCard'
-import { MembersTable } from '@/components/features/members/MembersTable'
 import { CreateMemberModal } from '@/components/features/members/CreateMemberModal'
+import { MembersTable } from '@/components/features/members/MembersTable'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -17,8 +15,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { useDashboardStats } from '@/hooks/queries/useDashboardStats'
+import { useMembers } from '@/hooks/queries/useMembers'
 import { mockMinistries } from '@/lib/mocks'
 import type { MemberStatus } from '@/types/user'
+
+const MEMBER_LIST_STATUS_LABELS: Record<string, string> = {
+  all: 'Todos os status',
+  active: 'Ativos',
+  visitor: 'Visitantes',
+  inactive: 'Inativos',
+}
+
+function ministryFilterLabel(ministryId: string): string {
+  if (ministryId === 'all') return 'Todos os ministérios'
+  const m = mockMinistries.find((x) => x.id === ministryId && !x.deleted_at)
+  return m?.name ?? ministryId
+}
 
 export default function MembersPage() {
   const [search, setSearch] = useState('')
@@ -38,12 +51,14 @@ export default function MembersPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Membros</h2>
-          <p className="mt-1 text-sm text-gray-500">Gerencie os membros da sua igreja</p>
+          <h2 className="font-bold text-2xl text-gray-900">Membros</h2>
+          <p className="mt-1 text-gray-500 text-sm">
+            Gerencie os membros da sua igreja
+          </p>
         </div>
         <Button
           onClick={() => setCreateOpen(true)}
-          className="bg-blue-600 hover:bg-blue-700 gap-2"
+          className="gap-2 bg-blue-600 hover:bg-blue-700"
         >
           <UserPlus className="h-4 w-4" />
           Novo Membro
@@ -85,17 +100,23 @@ export default function MembersPage() {
       {/* Filters */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
           <Input
             placeholder="Buscar por nome, e-mail ou telefone..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-9 bg-white"
+            className="bg-white pl-9"
           />
         </div>
-        <Select value={status} onValueChange={(v) => setStatus(v as MemberStatus | 'all')}>
-          <SelectTrigger className="w-full sm:w-44 bg-white">
-            <SelectValue placeholder="Status" />
+        <Select
+          value={status}
+          onValueChange={(v) => setStatus(v as MemberStatus | 'all')}
+          itemToStringLabel={(v) =>
+            MEMBER_LIST_STATUS_LABELS[String(v)] ?? String(v)
+          }
+        >
+          <SelectTrigger className="w-full bg-white sm:w-44">
+            <SelectValue placeholder="Filtrar por status" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Todos os status</SelectItem>
@@ -104,9 +125,13 @@ export default function MembersPage() {
             <SelectItem value="inactive">Inativos</SelectItem>
           </SelectContent>
         </Select>
-        <Select value={ministryId} onValueChange={setMinistryId}>
-          <SelectTrigger className="w-full sm:w-48 bg-white">
-            <SelectValue placeholder="Ministério" />
+        <Select
+          value={ministryId}
+          onValueChange={setMinistryId}
+          itemToStringLabel={(v) => ministryFilterLabel(String(v))}
+        >
+          <SelectTrigger className="w-full bg-white sm:w-48">
+            <SelectValue placeholder="Filtrar por ministério" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Todos os ministérios</SelectItem>

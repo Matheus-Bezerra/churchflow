@@ -1,28 +1,80 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.4.13/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.3.8/schema.json",
+  "files": {
+    "ignoreUnknown": false
+  },
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
     "indentWidth": 2,
-    "lineWidth": 100
+    "lineWidth": 80
   },
   "javascript": {
     "formatter": {
       "quoteStyle": "single",
-      "trailingCommas": "all"
+      "trailingCommas": "all",
+      "arrowParentheses": "always",
+      "semicolons": "asNeeded",
+      "lineEnding": "lf"
+    }
+  },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
     }
   },
   "linter": {
     "enabled": true,
     "rules": {
       "recommended": true,
-      "suspicious": {
-        "noConsole": { "level": "warn", "options": { "allow": ["log"] } }
+      "style": {
+        "useSelfClosingElements": "off",
+        "noNonNullAssertion": "off"
+      },
+      "complexity": {
+        "useArrowFunction": "off",
+        "useOptionalChain": "off"
+      },
+      "correctness": {
+        "noUnusedVariables": "error",
+        "noUnusedImports": "error",
+        "useUniqueElementIds": "off"
+      },
+      "nursery": {
+        "useSortedClasses": {
+          "level": "warn",
+          "fix": "safe",
+          "options": {}
+        }
+      },
+      "a11y": {
+        "useAltText": "warn",
+        "useAriaPropsForRole": "warn",
+        "noAriaUnsupportedElements": "warn",
+        "useAriaPropsSupportedByRole": "warn",
+        "useFocusableInteractive": "warn",
+        "useSemanticElements": "warn"
+      }
+    },
+    "includes": ["src/**/*", "!node_modules/**"]
+  },
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "source": {
+        "organizeImports": {
+          "level": "on",
+          "options": {
+            "groups": [
+              ["**", "!:ALIAS:", "!:PATH:"],
+              ":BLANK_LINE:",
+              [":ALIAS:"],
+              ":BLANK_LINE:",
+              [":PATH:"]
+            ]
+          }
+        }
       }
     }
-  },
-  "assist": { "actions": { "source": { "organizeImports": "on" } } },
-  "files": {
-    "includes": ["**", "!**/node_modules", "!**/.next", "!**/dist", "!**/build", "!**/__mocks__"]
   }
 }

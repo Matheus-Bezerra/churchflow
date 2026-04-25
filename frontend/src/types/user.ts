@@ -39,6 +39,7 @@ export interface DashboardStats {
   visitors: number
   baptized: number
   ministries_count: number
+  events_this_month: number
   schedules_this_month: number
   birthdays_this_month: number
   new_members_this_month: number

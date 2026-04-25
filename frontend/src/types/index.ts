@@ -1,4 +1,5 @@
 export * from './church'
-export * from './user'
+export * from './event'
 export * from './ministry'
 export * from './schedule'
+export * from './user'

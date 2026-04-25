@@ -6,11 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
-const PRESET_SEEDS = ['alex', 'sam', 'jordan', 'taylor', 'morgan', 'casey', 'riley', 'avery']
-
-function dicebearUrl(seed: string) {
-  return `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`
-}
+import { PRESET_SEEDS, dicebearUrl } from './utils/avatar'
 
 interface AvatarPickerProps {
   value: string | undefined
@@ -90,10 +86,10 @@ export function AvatarPicker({ value, onChange, name }: AvatarPickerProps) {
                 type="button"
                 onClick={() => onChange(url)}
                 className={cn(
-                  'flex flex-col items-center gap-1 rounded-lg border p-2 text-[11px] transition-colors',
+                  'flex items-center justify-center rounded-lg border p-2 transition-colors',
                   selected
-                    ? 'border-blue-500 bg-blue-50 text-blue-700'
-                    : 'border-gray-200 hover:border-gray-300 text-gray-500',
+                    ? 'border-blue-500 bg-blue-50'
+                    : 'border-gray-200 hover:border-gray-300',
                 )}
               >
                 <img
@@ -101,7 +97,6 @@ export function AvatarPicker({ value, onChange, name }: AvatarPickerProps) {
                   alt={seed}
                   className="h-10 w-10 rounded-full bg-gray-100"
                 />
-                <span className="capitalize">{seed}</span>
               </button>
             )
           })}

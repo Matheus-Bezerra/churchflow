@@ -1,14 +1,18 @@
 export type ScheduleStatus = 'pending' | 'confirmed' | 'declined'
 
+export interface ScheduleVolunteer {
+  user_id: string
+  role: string
+}
+
 export interface Schedule {
   id: string
   church_id: string
+  event_id: string
+  event_occurrence_date: string
   ministry_id: string
-  volunteer_id: string
-  title: string
-  date: string
-  start_time: string
-  end_time?: string
+  name: string
+  volunteers: ScheduleVolunteer[]
   status: ScheduleStatus
   decline_reason?: string | null
   notes?: string | null
@@ -18,8 +22,10 @@ export interface Schedule {
 }
 
 export interface ScheduleWithMeta extends Schedule {
-  volunteer_name: string
-  volunteer_avatar?: string
+  event_name: string
+  event_color: string
+  event_icon: string
+  event_time?: string
   ministry_name: string
   ministry_color: string
   hasConflict: boolean

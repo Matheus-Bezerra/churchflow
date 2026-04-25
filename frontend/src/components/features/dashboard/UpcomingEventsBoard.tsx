@@ -1,139 +1,305 @@
 'use client'
 
+import { CalendarDays, ChevronRight, Clock } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { CalendarDays, ChevronRight } from 'lucide-react'
-import { useSchedules } from '@/hooks/queries/useSchedules'
+import { useState } from 'react'
+import { ptBR } from 'react-day-picker/locale'
+
+import { Calendar } from '@/components/ui/calendar'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useSchedules } from '@/hooks/queries/useSchedules'
+import type { EventIconName } from '@/lib/iconMap'
+import { getEventIcon } from '@/lib/iconMap'
+import { cn } from '@/lib/utils'
+import type { ScheduleWithMeta } from '@/types/schedule'
+import { normalizeDate } from '@/utils/formatters/calendar'
 
-const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
-
-function getMonthLabel(date: Date) {
-  return date.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })
-}
-
-function getShortDateLabel(date: Date) {
-  return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })
-}
-
-function normalizeDate(date: Date) {
-  return new Date(date.getFullYear(), date.getMonth(), date.getDate())
+function toDayKey(date: Date): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
 }
 
 export function UpcomingEventsBoard() {
   const router = useRouter()
   const { data: schedules = [], isLoading } = useSchedules()
+  const [viewMonth, setViewMonth] = useState<Date>(new Date())
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date())
 
   const today = normalizeDate(new Date())
 
   const upcoming = schedules
-    .filter((schedule) => normalizeDate(new Date(schedule.date)) >= today)
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-    .slice(0, 6)
+    .filter((s) => normalizeDate(new Date(s.event_occurrence_date)) >= today)
+    .sort(
+      (a, b) =>
+        new Date(a.event_occurrence_date).getTime() -
+        new Date(b.event_occurrence_date).getTime(),
+    )
+    .slice(0, 5)
 
-  const baseDate = upcoming.length > 0 ? new Date(upcoming[0].date) : new Date()
-  const monthStart = new Date(baseDate.getFullYear(), baseDate.getMonth(), 1)
-  const monthEnd = new Date(baseDate.getFullYear(), baseDate.getMonth() + 1, 0)
+  const allEventDates = schedules.map(
+    (s) => new Date(`${s.event_occurrence_date}T00:00:00`),
+  )
 
-  const monthDays: Date[] = []
-  for (let d = 1; d <= monthEnd.getDate(); d += 1) {
-    monthDays.push(new Date(baseDate.getFullYear(), baseDate.getMonth(), d))
-  }
+  const eventsByDay = schedules.reduce<Record<string, ScheduleWithMeta[]>>(
+    (acc, schedule) => {
+      const key = schedule.event_occurrence_date
+      acc[key] = [...(acc[key] ?? []), schedule]
+      return acc
+    },
+    {},
+  )
 
-  const leadingEmptyDays = monthStart.getDay()
-  const schedulesByDay = upcoming.reduce<Record<string, number>>((acc, schedule) => {
-    const key = schedule.date
-    acc[key] = (acc[key] ?? 0) + 1
-    return acc
-  }, {})
+  const selectedDayKey = selectedDate ? toDayKey(selectedDate) : undefined
+  const selectedDayEvents = selectedDayKey
+    ? (eventsByDay[selectedDayKey] ?? [])
+    : []
 
   return (
     <Card className="border-0 shadow-sm">
-      <CardHeader className="pb-4">
-        <CardTitle className="text-base font-semibold text-gray-900 flex items-center gap-2">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 font-semibold text-base text-gray-900">
           <CalendarDays className="h-4 w-4 text-blue-600" />
-          Próximos eventos e escalas
+          Próximos eventos
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
+
+      <CardContent>
         {isLoading ? (
-          <div className="space-y-3">
-            <Skeleton className="h-56 w-full rounded-xl" />
-            <Skeleton className="h-14 w-full rounded-lg" />
-            <Skeleton className="h-14 w-full rounded-lg" />
+          <div className="flex gap-4">
+            <Skeleton className="h-64 w-[272px] shrink-0 rounded-xl" />
+            <div className="flex-1 space-y-2">
+              <Skeleton className="h-4 w-16 rounded" />
+              {Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton key={String(i)} className="h-14 w-full rounded-xl" />
+              ))}
+            </div>
           </div>
         ) : (
-          <>
-            <div className="rounded-xl border border-gray-200 p-4">
-              <div className="mb-3 text-sm font-medium capitalize text-gray-700">
-                {getMonthLabel(baseDate)}
-              </div>
-              <div className="grid grid-cols-7 gap-1 text-center text-xs text-gray-400">
-                {weekDays.map((day) => (
-                  <div key={day} className="py-1 font-medium">
-                    {day}
-                  </div>
-                ))}
-              </div>
-              <div className="mt-1 grid grid-cols-7 gap-1">
-                {Array.from({ length: leadingEmptyDays }).map((_, i) => (
-                  <div key={`empty-${i}`} className="h-10 rounded-md" />
-                ))}
-                {monthDays.map((day) => {
-                  const dayKey = day.toISOString().slice(0, 10)
-                  const daySchedules = schedulesByDay[dayKey] ?? 0
-                  const isToday = dayKey === today.toISOString().slice(0, 10)
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
+            {/* ── Calendário ── */}
+            <div className="shrink-0 overflow-hidden rounded-xl border border-blue-100/60 bg-linear-to-b from-blue-50/40 to-white lg:w-[272px]">
+              <Calendar
+                mode="single"
+                selected={selectedDate}
+                onSelect={setSelectedDate}
+                month={viewMonth}
+                onMonthChange={setViewMonth}
+                locale={ptBR}
+                captionLayout="dropdown"
+                startMonth={new Date(2024, 0)}
+                endMonth={new Date(2028, 11)}
+                modifiers={{ hasEvent: allEventDates }}
+                className="w-full rounded-none border-0 bg-transparent [--cell-size:--spacing(9)]"
+                components={{
+                  DayButton: ({ day, modifiers, ...buttonProps }) => {
+                    const key = toDayKey(day.date)
+                    const dayEvents = eventsByDay[key] ?? []
+                    const count = dayEvents.length
+                    const firstColor = dayEvents[0]?.event_color
+                    const isSelected =
+                      !!modifiers.selected &&
+                      !modifiers.range_start &&
+                      !modifiers.range_end
+                    const isToday = !!modifiers.today
+                    const isOutside = !!modifiers.outside
 
-                  return (
-                    <div
-                      key={dayKey}
-                      className={`h-10 rounded-md border text-xs flex flex-col items-center justify-center ${
-                        daySchedules > 0
-                          ? 'border-blue-200 bg-blue-50 text-blue-700'
-                          : 'border-transparent text-gray-500'
-                      } ${isToday ? 'ring-1 ring-blue-400' : ''}`}
-                    >
-                      <span>{day.getDate()}</span>
-                      {daySchedules > 0 && <span className="text-[10px] leading-none">{daySchedules}</span>}
+                    return (
+                      <button
+                        type="button"
+                        {...buttonProps}
+                        className={cn(
+                          'relative flex h-full w-full flex-col items-center justify-center gap-px rounded-md py-0.5 text-xs transition-all',
+                          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-1',
+                          isOutside && 'opacity-30',
+                          modifiers.disabled &&
+                            'pointer-events-none opacity-30',
+                          !count &&
+                            isToday &&
+                            !isSelected &&
+                            'bg-muted font-medium',
+                          !count &&
+                            !isToday &&
+                            !isSelected &&
+                            'text-gray-700 hover:bg-gray-100',
+                          !count &&
+                            isSelected &&
+                            'bg-blue-600 text-white shadow-sm hover:bg-blue-700',
+                        )}
+                        style={
+                          count > 0
+                            ? {
+                                backgroundColor: `${firstColor}${isSelected ? '35' : '18'}`,
+                                color: isSelected ? firstColor : '#111827',
+                                boxShadow: isSelected
+                                  ? `0 0 0 2px ${firstColor}, 0 0 0 4px ${firstColor}30`
+                                  : undefined,
+                              }
+                            : undefined
+                        }
+                      >
+                        <span
+                          className={cn(
+                            'leading-none',
+                            count > 0 && 'font-semibold',
+                          )}
+                        >
+                          {day.date.getDate()}
+                        </span>
+                        {count > 0 && (
+                          <span
+                            className="font-bold text-[8px] leading-none"
+                            style={{
+                              color: isSelected ? firstColor : firstColor,
+                            }}
+                          >
+                            {count}
+                          </span>
+                        )}
+                      </button>
+                    )
+                  },
+                }}
+                footer={
+                  selectedDate ? (
+                    <div className="border-blue-100/60 border-t p-2">
+                      {selectedDayEvents.length > 0 ? (
+                        <div className="space-y-1">
+                          {selectedDayEvents.map((ev) => (
+                            <div
+                              key={ev.id}
+                              className="flex items-center gap-1.5 rounded-md px-2 py-1.5"
+                              style={{ backgroundColor: `${ev.event_color}12` }}
+                            >
+                              <span
+                                className="h-1.5 w-1.5 shrink-0 rounded-full"
+                                style={{ backgroundColor: ev.event_color }}
+                              />
+                              <span
+                                className="truncate font-medium text-[11px]"
+                                style={{ color: ev.event_color }}
+                              >
+                                {ev.event_name}
+                              </span>
+                              {ev.event_time && (
+                                <span className="ml-auto shrink-0 text-[10px] text-gray-400">
+                                  {ev.event_time}
+                                </span>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="py-0.5 text-center text-[11px] text-gray-400">
+                          Sem eventos em{' '}
+                          {selectedDate.toLocaleDateString('pt-BR', {
+                            day: '2-digit',
+                            month: 'short',
+                          })}
+                        </p>
+                      )}
                     </div>
-                  )
-                })}
-              </div>
+                  ) : null
+                }
+              />
             </div>
 
-            <div className="space-y-3">
+            {/* ── Lista de próximos ── */}
+            <div className="min-w-0 flex-1 space-y-2">
               {upcoming.length === 0 ? (
-                <div className="rounded-lg border border-dashed border-gray-200 p-4 text-sm text-gray-500">
-                  Nenhuma escala futura cadastrada.
+                <div className="rounded-lg border border-gray-200 border-dashed p-4 text-center text-gray-500 text-sm">
+                  Nenhuma escala futura.
                 </div>
               ) : (
-                upcoming.map((schedule) => (
-                  <div
-                    key={schedule.id}
-                    className="flex flex-col gap-3 rounded-lg border border-gray-100 bg-gray-50/50 p-3 sm:flex-row sm:items-center sm:justify-between"
+                <>
+                  {upcoming.map((schedule) => {
+                    const Icon = getEventIcon(
+                      schedule.event_icon as EventIconName,
+                    )
+                    const date = new Date(
+                      `${schedule.event_occurrence_date}T00:00:00`,
+                    )
+                    const isEventToday =
+                      normalizeDate(date).getTime() === today.getTime()
+                    const formattedDate = isEventToday
+                      ? 'Hoje'
+                      : date.toLocaleDateString('pt-BR', {
+                          weekday: 'short',
+                          day: '2-digit',
+                          month: 'short',
+                        })
+
+                    return (
+                      <button
+                        key={schedule.id}
+                        type="button"
+                        className="group flex w-full cursor-pointer items-center gap-3 rounded-xl border border-gray-100 bg-gray-50/60 px-3 py-2.5 text-left transition-all hover:border-gray-200 hover:bg-white hover:shadow-sm"
+                        onClick={() => router.push('/schedules')}
+                      >
+                        <div
+                          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
+                          style={{
+                            backgroundColor: `${schedule.event_color}18`,
+                          }}
+                        >
+                          <Icon
+                            className="h-4 w-4"
+                            style={{ color: schedule.event_color }}
+                          />
+                        </div>
+
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate font-medium text-gray-900 text-sm leading-tight">
+                            {schedule.event_name}
+                          </p>
+                          <div className="mt-0.5 flex flex-wrap items-center gap-x-1.5 text-gray-400 text-xs">
+                            <span
+                              className={cn(
+                                'capitalize',
+                                isEventToday && 'font-semibold text-blue-600',
+                              )}
+                            >
+                              {formattedDate}
+                            </span>
+                            {schedule.event_time && (
+                              <>
+                                <span>·</span>
+                                <span className="flex items-center gap-0.5">
+                                  <Clock className="h-2.5 w-2.5" />
+                                  {schedule.event_time}
+                                </span>
+                              </>
+                            )}
+                            {schedule.ministry_name && (
+                              <>
+                                <span>·</span>
+                                <span
+                                  className="font-medium"
+                                  style={{ color: schedule.ministry_color }}
+                                >
+                                  {schedule.ministry_name}
+                                </span>
+                              </>
+                            )}
+                          </div>
+                        </div>
+
+                        <ChevronRight className="h-3.5 w-3.5 shrink-0 text-gray-300 transition-colors group-hover:text-gray-500" />
+                      </button>
+                    )
+                  })}
+
+                  <button
+                    type="button"
+                    className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-lg border border-blue-100 bg-blue-50 px-3 py-2 font-medium text-blue-700 text-xs transition-colors hover:bg-blue-100"
+                    onClick={() => router.push('/events')}
                   >
-                    <div className="min-w-0">
-                      <p className="text-sm font-medium text-gray-900 truncate">{schedule.title}</p>
-                      <p className="text-xs text-gray-500">
-                        {getShortDateLabel(new Date(schedule.date))} às {schedule.start_time}
-                        {schedule.end_time ? ` · ${schedule.end_time}` : ''} · {schedule.ministry_name}
-                      </p>
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-fit gap-1"
-                      onClick={() => router.push('/schedules')}
-                    >
-                      Ver escala
-                      <ChevronRight className="h-3.5 w-3.5" />
-                    </Button>
-                  </div>
-                ))
+                    Ver todos os eventos
+                    <ChevronRight className="h-3.5 w-3.5" />
+                  </button>
+                </>
               )}
             </div>
-          </>
+          </div>
         )}
       </CardContent>
     </Card>

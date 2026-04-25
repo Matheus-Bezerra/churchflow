@@ -1,9 +1,9 @@
 import {
+  checkConflict,
+  mockMinistries,
   mockSchedules,
   mockUnavailabilities,
   mockUsers,
-  mockMinistries,
-  checkConflict,
 } from '@/lib/mocks'
 import type { Schedule } from '@/types/schedule'
 import type { UserUnavailability } from '@/types/user'
@@ -14,11 +14,11 @@ describe('checkConflict', () => {
   const baseSchedule: Schedule = {
     id: 'test-sched',
     church_id: 'church-1',
+    event_id: 'event-1',
     ministry_id: 'ministry-1',
-    volunteer_id: 'user-2',
-    title: 'Test Schedule',
-    date: '2025-05-04',
-    start_time: '09:00',
+    event_occurrence_date: '2026-05-04',
+    name: 'Test Schedule',
+    volunteers: [{ user_id: 'user-2', role: 'Vocal' }],
     status: 'pending',
     decline_reason: null,
     notes: null,
@@ -32,8 +32,8 @@ describe('checkConflict', () => {
       {
         id: 'u1',
         user_id: 'user-2',
-        start_date: '2025-05-04',
-        end_date: '2025-05-04',
+        start_date: '2026-05-04',
+        end_date: '2026-05-04',
         created_at: '2025-04-01T00:00:00Z',
       },
     ]
@@ -45,8 +45,8 @@ describe('checkConflict', () => {
       {
         id: 'u2',
         user_id: 'user-2',
-        start_date: '2025-05-01',
-        end_date: '2025-05-10',
+        start_date: '2026-05-01',
+        end_date: '2026-05-10',
         created_at: '2025-04-01T00:00:00Z',
       },
     ]
@@ -58,8 +58,8 @@ describe('checkConflict', () => {
       {
         id: 'u3',
         user_id: 'user-99',
-        start_date: '2025-05-04',
-        end_date: '2025-05-04',
+        start_date: '2026-05-04',
+        end_date: '2026-05-04',
         created_at: '2025-04-01T00:00:00Z',
       },
     ]
@@ -71,8 +71,8 @@ describe('checkConflict', () => {
       {
         id: 'u4',
         user_id: 'user-2',
-        start_date: '2025-05-10',
-        end_date: '2025-05-20',
+        start_date: '2026-05-10',
+        end_date: '2026-05-20',
         created_at: '2025-04-01T00:00:00Z',
       },
     ]
@@ -84,8 +84,8 @@ describe('checkConflict', () => {
       {
         id: 'u5',
         user_id: 'user-2',
-        start_date: '2025-04-20',
-        end_date: '2025-04-30',
+        start_date: '2026-04-20',
+        end_date: '2026-04-30',
         created_at: '2025-04-01T00:00:00Z',
       },
     ]
@@ -122,17 +122,17 @@ describe('mockSchedules soft-delete filter', () => {
 })
 
 describe('mockSchedules conflict detection with real data', () => {
-  it('detects conflict for sched-1 (user-2 unavailable on 2025-05-04)', () => {
+  it('detects conflict for sched-1 (user-2 unavailable on 2026-05-03)', () => {
     const schedule = mockSchedules.find((s) => s.id === 'sched-1')!
     expect(checkConflict(schedule, mockUnavailabilities)).toBe(true)
   })
 
-  it('detects no conflict for sched-3 (user-4 has no unavailabilities)', () => {
+  it('detects no conflict for sched-3 (user-4 and user-12 have no unavailabilities)', () => {
     const schedule = mockSchedules.find((s) => s.id === 'sched-3')!
     expect(checkConflict(schedule, mockUnavailabilities)).toBe(false)
   })
 
-  it('detects conflict for sched-4 (user-7 unavailable on 2025-05-25)', () => {
+  it('detects conflict for sched-4 (user-7 unavailable on 2026-05-24)', () => {
     const schedule = mockSchedules.find((s) => s.id === 'sched-4')!
     expect(checkConflict(schedule, mockUnavailabilities)).toBe(true)
   })
@@ -162,8 +162,10 @@ describe('mock data volunteer resolution', () => {
   it('resolves volunteer name for each active schedule', () => {
     const active = mockSchedules.filter((s) => !s.deleted_at)
     active.forEach((schedule) => {
-      const volunteer = mockUsers.find((u) => u.id === schedule.volunteer_id)
-      expect(volunteer).toBeDefined()
+      schedule.volunteers.forEach((v) => {
+        const user = mockUsers.find((u) => u.id === v.user_id)
+        expect(user).toBeDefined()
+      })
     })
   })
 

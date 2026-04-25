@@ -1,7 +1,8 @@
-import type { User, UserUnavailability, DashboardStats } from '@/types/user'
-import type { Ministry, MinistryActivity } from '@/types/ministry'
-import type { Schedule, RecentActivity } from '@/types/schedule'
 import type { Cell } from '@/types/church'
+import type { ChurchEvent, EventType } from '@/types/event'
+import type { Ministry, MinistryActivity } from '@/types/ministry'
+import type { RecentActivity, Schedule } from '@/types/schedule'
+import type { DashboardStats, User, UserUnavailability } from '@/types/user'
 
 // ─── Cells ────────────────────────────────────────────────────────────────────
 
@@ -61,7 +62,7 @@ export const mockUsers: User[] = [
     status: 'active',
     baptized: true,
     baptism_date: '2020-06-14',
-    birth_date: '1990-04-15',
+    birth_date: '1990-04-25',
     address: 'Rua das Palmeiras, 200',
     city: 'São Paulo',
     state: 'SP',
@@ -127,7 +128,7 @@ export const mockUsers: User[] = [
     status: 'active',
     baptized: false,
     baptism_date: null,
-    birth_date: '2000-04-22',
+    birth_date: '2000-04-26',
     address: 'Rua Consolação, 300',
     city: 'São Paulo',
     state: 'SP',
@@ -281,7 +282,7 @@ export const mockUsers: User[] = [
     status: 'visitor',
     baptized: false,
     baptism_date: null,
-    birth_date: '2005-04-24',
+    birth_date: '2005-04-28',
     address: 'Rua Liberdade, 50',
     city: 'São Paulo',
     state: 'SP',
@@ -303,7 +304,7 @@ export const mockUsers: User[] = [
     status: 'active',
     baptized: true,
     baptism_date: '2024-11-03',
-    birth_date: '1996-04-10',
+    birth_date: '1996-04-30',
     address: 'Av. Brigadeiro, 900',
     city: 'São Paulo',
     state: 'SP',
@@ -369,7 +370,7 @@ export const mockUsers: User[] = [
     status: 'active',
     baptized: false,
     baptism_date: null,
-    birth_date: '2003-04-05',
+    birth_date: '2003-05-03',
     address: 'Rua Oscar Freire, 300',
     city: 'São Paulo',
     state: 'SP',
@@ -412,7 +413,8 @@ export const mockMinistries: Ministry[] = [
     id: 'ministry-1',
     church_id: 'church-1',
     name: 'Louvor e Adoração',
-    description: 'Ministério responsável pela condução da adoração nos cultos e eventos da igreja.',
+    description:
+      'Ministério responsável pela condução da adoração nos cultos e eventos da igreja.',
     icon: 'Music',
     color: '#8B5CF6',
     leader_id: 'user-1',
@@ -429,7 +431,8 @@ export const mockMinistries: Ministry[] = [
     id: 'ministry-2',
     church_id: 'church-1',
     name: 'Mídia e Tecnologia',
-    description: 'Cuida de transmissões ao vivo, redes sociais e produção de conteúdo digital.',
+    description:
+      'Cuida de transmissões ao vivo, redes sociais e produção de conteúdo digital.',
     icon: 'Monitor',
     color: '#0EA5E9',
     leader_id: 'user-5',
@@ -446,7 +449,8 @@ export const mockMinistries: Ministry[] = [
     id: 'ministry-3',
     church_id: 'church-1',
     name: 'Recepção e Hospitalidade',
-    description: 'Responsável por receber e acolher visitantes e membros com excelência.',
+    description:
+      'Responsável por receber e acolher visitantes e membros com excelência.',
     icon: 'Heart',
     color: '#F97316',
     leader_id: 'user-1',
@@ -463,7 +467,8 @@ export const mockMinistries: Ministry[] = [
     id: 'ministry-4',
     church_id: 'church-1',
     name: 'Pregação e Ensino',
-    description: 'Equipe de pastores e líderes responsáveis por estudos bíblicos e pregações.',
+    description:
+      'Equipe de pastores e líderes responsáveis por estudos bíblicos e pregações.',
     icon: 'BookOpen',
     color: '#10B981',
     leader_id: 'user-13',
@@ -480,7 +485,8 @@ export const mockMinistries: Ministry[] = [
     id: 'ministry-5',
     church_id: 'church-1',
     name: 'Ministério Infantil',
-    description: 'Cuidado espiritual e recreativo das crianças durante os cultos.',
+    description:
+      'Cuidado espiritual e recreativo das crianças durante os cultos.',
     icon: 'Baby',
     color: '#F59E0B',
     leader_id: 'user-7',
@@ -497,7 +503,8 @@ export const mockMinistries: Ministry[] = [
     id: 'ministry-6',
     church_id: 'church-1',
     name: 'Intercessão',
-    description: 'Grupo de oração que intercede pela igreja e suas necessidades.',
+    description:
+      'Grupo de oração que intercede pela igreja e suas necessidades.',
     icon: 'Flame',
     color: '#EF4444',
     leader_id: 'user-8',
@@ -514,7 +521,8 @@ export const mockMinistries: Ministry[] = [
     id: 'ministry-7',
     church_id: 'church-1',
     name: 'Comunicação',
-    description: 'Gestão da identidade visual, materiais impressos e comunicação interna.',
+    description:
+      'Gestão da identidade visual, materiais impressos e comunicação interna.',
     icon: 'Megaphone',
     color: '#EC4899',
     leader_id: 'user-9',
@@ -657,12 +665,14 @@ export const mockSchedules: Schedule[] = [
   {
     id: 'sched-1',
     church_id: 'church-1',
+    event_id: 'event-1',
+    event_occurrence_date: '2026-05-03',
     ministry_id: 'ministry-1',
-    volunteer_id: 'user-2',
-    title: 'Culto Dominical — Louvor',
-    date: '2026-05-03',
-    start_time: '09:00',
-    end_time: '12:00',
+    name: 'Culto Dominical — Louvor',
+    volunteers: [
+      { user_id: 'user-2', role: 'Vocal' },
+      { user_id: 'user-1', role: 'Guitarra' },
+    ],
     status: 'confirmed',
     decline_reason: null,
     notes: null,
@@ -673,12 +683,14 @@ export const mockSchedules: Schedule[] = [
   {
     id: 'sched-2',
     church_id: 'church-1',
+    event_id: 'event-1',
+    event_occurrence_date: '2026-05-10',
     ministry_id: 'ministry-2',
-    volunteer_id: 'user-3',
-    title: 'Transmissão ao Vivo — Domingo',
-    date: '2026-05-10',
-    start_time: '09:00',
-    end_time: '12:00',
+    name: 'Transmissão ao Vivo — Domingo',
+    volunteers: [
+      { user_id: 'user-3', role: 'Operador de câmera' },
+      { user_id: 'user-5', role: 'Técnico de som' },
+    ],
     status: 'pending',
     decline_reason: null,
     notes: 'Verificar câmeras antes do culto',
@@ -689,12 +701,14 @@ export const mockSchedules: Schedule[] = [
   {
     id: 'sched-3',
     church_id: 'church-1',
+    event_id: 'event-1',
+    event_occurrence_date: '2026-05-17',
     ministry_id: 'ministry-3',
-    volunteer_id: 'user-4',
-    title: 'Recepção — Culto de Celebração',
-    date: '2026-05-17',
-    start_time: '08:30',
-    end_time: '12:30',
+    name: 'Recepção — Culto de Celebração',
+    volunteers: [
+      { user_id: 'user-4', role: 'Recepcionista' },
+      { user_id: 'user-12', role: 'Recepcionista' },
+    ],
     status: 'confirmed',
     decline_reason: null,
     notes: null,
@@ -705,12 +719,14 @@ export const mockSchedules: Schedule[] = [
   {
     id: 'sched-4',
     church_id: 'church-1',
+    event_id: 'event-1',
+    event_occurrence_date: '2026-05-24',
     ministry_id: 'ministry-5',
-    volunteer_id: 'user-7',
-    title: 'Ministério Infantil — Domingo',
-    date: '2026-05-24',
-    start_time: '09:00',
-    end_time: '12:00',
+    name: 'Ministério Infantil — Domingo',
+    volunteers: [
+      { user_id: 'user-7', role: 'Professor' },
+      { user_id: 'user-14', role: 'Auxiliar' },
+    ],
     status: 'pending',
     decline_reason: null,
     notes: null,
@@ -721,12 +737,14 @@ export const mockSchedules: Schedule[] = [
   {
     id: 'sched-5',
     church_id: 'church-1',
+    event_id: 'event-2',
+    event_occurrence_date: '2026-04-25',
     ministry_id: 'ministry-1',
-    volunteer_id: 'user-12',
-    title: 'Culto de Jovens — Louvor',
-    date: '2026-04-27',
-    start_time: '18:00',
-    end_time: '20:30',
+    name: 'Culto de Jovens — Louvor',
+    volunteers: [
+      { user_id: 'user-12', role: 'Vocal' },
+      { user_id: 'user-9', role: 'Baixo' },
+    ],
     status: 'declined',
     decline_reason: 'Não posso comparecer por motivos de saúde',
     notes: null,
@@ -737,15 +755,17 @@ export const mockSchedules: Schedule[] = [
   {
     id: 'sched-6',
     church_id: 'church-1',
+    event_id: 'event-3',
+    event_occurrence_date: '2026-04-29',
     ministry_id: 'ministry-6',
-    volunteer_id: 'user-8',
-    title: 'Vigília de Oração',
-    date: '2026-05-02',
-    start_time: '22:00',
-    end_time: '00:00',
+    name: 'Vigília de Oração',
+    volunteers: [
+      { user_id: 'user-8', role: 'Intercessor' },
+      { user_id: 'user-3', role: 'Intercessor' },
+    ],
     status: 'confirmed',
     decline_reason: null,
-    notes: 'Evento especial de maio',
+    notes: 'Evento especial de abril',
     created_at: '2025-04-18T00:00:00Z',
     updated_at: '2025-04-20T00:00:00Z',
     deleted_at: null,
@@ -753,12 +773,11 @@ export const mockSchedules: Schedule[] = [
   {
     id: 'sched-7',
     church_id: 'church-1',
+    event_id: 'event-3',
+    event_occurrence_date: '2026-05-06',
     ministry_id: 'ministry-4',
-    volunteer_id: 'user-13',
-    title: 'Estudo Bíblico — Romanos',
-    date: '2026-04-29',
-    start_time: '20:00',
-    end_time: '22:00',
+    name: 'Estudo Bíblico — Romanos',
+    volunteers: [{ user_id: 'user-13', role: 'Pregador' }],
     status: 'confirmed',
     decline_reason: null,
     notes: null,
@@ -769,12 +788,14 @@ export const mockSchedules: Schedule[] = [
   {
     id: 'sched-8',
     church_id: 'church-1',
+    event_id: 'event-4',
+    event_occurrence_date: '2026-05-10',
     ministry_id: 'ministry-7',
-    volunteer_id: 'user-14',
-    title: 'Produção de Arte — Maio',
-    date: '2026-05-02',
-    start_time: '14:00',
-    end_time: '17:00',
+    name: 'Produção de Arte — Conferência',
+    volunteers: [
+      { user_id: 'user-14', role: 'Designer' },
+      { user_id: 'user-9', role: 'Fotógrafo' },
+    ],
     status: 'declined',
     decline_reason: 'Prazo muito curto para produção',
     notes: null,
@@ -786,12 +807,11 @@ export const mockSchedules: Schedule[] = [
   {
     id: 'sched-9',
     church_id: 'church-1',
+    event_id: 'event-1',
+    event_occurrence_date: '2025-04-20',
     ministry_id: 'ministry-2',
-    volunteer_id: 'user-5',
-    title: 'Transmissão Cancelada',
-    date: '2025-04-20',
-    start_time: '09:00',
-    end_time: '12:00',
+    name: 'Transmissão Cancelada',
+    volunteers: [{ user_id: 'user-5', role: 'Técnico' }],
     status: 'pending',
     decline_reason: null,
     notes: null,
@@ -862,10 +882,140 @@ export const mockDashboardStats: DashboardStats = {
   visitors: 2,
   baptized: 11,
   ministries_count: 7,
+  events_this_month: 12,
   schedules_this_month: 8,
   birthdays_this_month: 4,
   new_members_this_month: 2,
 }
+
+// ─── Event Types ──────────────────────────────────────────────────────────────
+
+export const mockEventTypes: EventType[] = [
+  {
+    id: 'etype-1',
+    church_id: 'church-1',
+    label: 'Culto',
+    is_default: true,
+    created_at: '2024-01-01T00:00:00Z',
+  },
+  {
+    id: 'etype-2',
+    church_id: 'church-1',
+    label: 'Culto de Jovens',
+    is_default: true,
+    created_at: '2024-01-01T00:00:00Z',
+  },
+  {
+    id: 'etype-3',
+    church_id: 'church-1',
+    label: 'Culto de Oração',
+    is_default: true,
+    created_at: '2024-01-01T00:00:00Z',
+  },
+  {
+    id: 'etype-4',
+    church_id: 'church-1',
+    label: 'Culto de Célula',
+    is_default: true,
+    created_at: '2024-01-01T00:00:00Z',
+  },
+  {
+    id: 'etype-5',
+    church_id: 'church-1',
+    label: 'Conferência',
+    is_default: true,
+    created_at: '2024-01-01T00:00:00Z',
+  },
+  {
+    id: 'etype-6',
+    church_id: 'church-1',
+    label: 'Evento Especial',
+    is_default: true,
+    created_at: '2024-01-01T00:00:00Z',
+  },
+]
+
+// ─── Events ───────────────────────────────────────────────────────────────────
+
+export const mockEvents: ChurchEvent[] = [
+  {
+    id: 'event-1',
+    church_id: 'church-1',
+    name: 'Culto Dominical',
+    type_id: 'etype-1',
+    icon: 'Church',
+    color: '#8B5CF6',
+    recurring: true,
+    recurrence_slots: [
+      { day: 'Domingo', time: '09:00' },
+      { day: 'Domingo', time: '18:00' },
+    ],
+    ministry_ids: ['ministry-1', 'ministry-2', 'ministry-5'],
+    created_at: '2024-01-15T00:00:00Z',
+    updated_at: '2025-04-01T00:00:00Z',
+    deleted_at: null,
+  },
+  {
+    id: 'event-2',
+    church_id: 'church-1',
+    name: 'Culto de Jovens',
+    type_id: 'etype-2',
+    icon: 'Star',
+    color: '#0EA5E9',
+    recurring: true,
+    recurrence_slots: [{ day: 'Sexta', time: '20:00' }],
+    ministry_ids: ['ministry-1', 'ministry-4'],
+    created_at: '2024-02-01T00:00:00Z',
+    updated_at: '2025-04-01T00:00:00Z',
+    deleted_at: null,
+  },
+  {
+    id: 'event-3',
+    church_id: 'church-1',
+    name: 'Oração',
+    type_id: 'etype-3',
+    icon: 'Flame',
+    color: '#F97316',
+    recurring: true,
+    recurrence_slots: [{ day: 'Quarta', time: '19:30' }],
+    ministry_ids: ['ministry-3'],
+    created_at: '2024-02-10T00:00:00Z',
+    updated_at: '2025-04-01T00:00:00Z',
+    deleted_at: null,
+  },
+  {
+    id: 'event-4',
+    church_id: 'church-1',
+    name: 'Conferência de Mulheres',
+    type_id: 'etype-5',
+    icon: 'Calendar',
+    color: '#EC4899',
+    recurring: false,
+    date: '2026-05-10',
+    time: '09:00',
+    recurrence_slots: [],
+    ministry_ids: ['ministry-2', 'ministry-5'],
+    created_at: '2026-04-01T00:00:00Z',
+    updated_at: '2026-04-01T00:00:00Z',
+    deleted_at: null,
+  },
+  {
+    id: 'event-5',
+    church_id: 'church-1',
+    name: 'Retiro de Casais',
+    type_id: 'etype-6',
+    icon: 'Heart',
+    color: '#10B981',
+    recurring: false,
+    date: '2026-06-20',
+    time: '08:00',
+    recurrence_slots: [],
+    ministry_ids: ['ministry-1', 'ministry-3', 'ministry-6'],
+    created_at: '2026-04-10T00:00:00Z',
+    updated_at: '2026-04-10T00:00:00Z',
+    deleted_at: null,
+  },
+]
 
 // ─── Helper: Check Conflict ───────────────────────────────────────────────────
 
@@ -873,12 +1023,26 @@ export function checkConflict(
   schedule: Schedule,
   unavailabilities: UserUnavailability[],
 ): boolean {
+  const schedDate = new Date(schedule.event_occurrence_date)
+  return schedule.volunteers.some((v) =>
+    unavailabilities.some((u) => {
+      if (u.user_id !== v.user_id) return false
+      const start = new Date(u.start_date)
+      const end = new Date(u.end_date)
+      return schedDate >= start && schedDate <= end
+    }),
+  )
+}
+
+export function checkVolunteerConflict(
+  userId: string,
+  date: string,
+  unavailabilities: UserUnavailability[],
+): boolean {
+  const d = new Date(date)
   return unavailabilities.some((u) => {
-    if (u.user_id !== schedule.volunteer_id) return false
-    const schedDate = new Date(schedule.date)
-    const start = new Date(u.start_date)
-    const end = new Date(u.end_date)
-    return schedDate >= start && schedDate <= end
+    if (u.user_id !== userId) return false
+    return d >= new Date(u.start_date) && d <= new Date(u.end_date)
   })
 }
 
@@ -895,10 +1059,17 @@ export function getMinistryById(id: string) {
 export function getBirthdaysThisMonth(): User[] {
   const now = new Date()
   const month = now.getMonth() + 1
+  const today = now.getDate()
+
   return mockUsers
     .filter((u) => !u.deleted_at && u.birth_date)
     .filter((u) => {
-      const bMonth = parseInt(u.birth_date!.split('-')[1], 10)
-      return bMonth === month
+      const [, birthMonth, birthDay] = u.birth_date!.split('-')
+      return Number(birthMonth) === month && Number(birthDay) >= today
+    })
+    .sort((a, b) => {
+      const dayA = Number(a.birth_date!.split('-')[2])
+      const dayB = Number(b.birth_date!.split('-')[2])
+      return dayA - dayB
     })
 }

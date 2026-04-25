@@ -11,22 +11,13 @@ import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Phone, Mail, MapPin, Calendar, Droplets, Network } from 'lucide-react'
 import type { User } from '@/types/user'
-import { mockMinistries, mockCells } from '@/lib/mocks'
 import { formatDate } from '@/lib/dateUtils'
+import { mockCells, mockMinistries } from '@/lib/mocks'
 
-const statusLabels = {
-  active: { label: 'Ativo', className: 'bg-emerald-50 text-emerald-700' },
-  inactive: { label: 'Inativo', className: 'bg-gray-100 text-gray-600' },
-  visitor: { label: 'Visitante', className: 'bg-blue-50 text-blue-700' },
-}
-
-const roleLabels: Record<string, string> = {
-  member: 'Membro',
-  leader: 'Líder',
-  pastor: 'Pastor',
-  deacon: 'Diácono',
-  elder: 'Ancião',
-}
+import {
+  MEMBER_ROLE_LABELS,
+  MEMBER_STATUS_CONFIG,
+} from './constants/labels'
 
 interface MemberProfileModalProps {
   member: User | null
@@ -37,7 +28,7 @@ interface MemberProfileModalProps {
 export function MemberProfileModal({ member, open, onOpenChange }: MemberProfileModalProps) {
   if (!member) return null
 
-  const statusCfg = statusLabels[member.status]
+  const statusCfg = MEMBER_STATUS_CONFIG[member.status]
   const cell = mockCells.find((c) => c.id === member.cell_id)
   const ministries = mockMinistries.filter((m) => member.ministry_ids.includes(m.id))
 
@@ -59,7 +50,7 @@ export function MemberProfileModal({ member, open, onOpenChange }: MemberProfile
             </Avatar>
             <div>
               <h3 className="text-lg font-semibold text-gray-900">{member.name}</h3>
-              <p className="text-sm text-gray-500">{roleLabels[member.role]}</p>
+              <p className="text-sm text-gray-500">{MEMBER_ROLE_LABELS[member.role]}</p>
               <div className="mt-1 flex items-center gap-2">
                 <Badge className={statusCfg.className}>{statusCfg.label}</Badge>
                 {member.baptized && (

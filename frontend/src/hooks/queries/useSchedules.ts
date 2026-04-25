@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
 import {
+  checkConflict,
+  mockEvents,
+  mockMinistries,
   mockSchedules,
   mockUnavailabilities,
-  mockUsers,
-  mockMinistries,
-  checkConflict,
 } from '@/lib/mocks'
 import type { ScheduleWithMeta } from '@/types/schedule'
 
@@ -13,20 +13,34 @@ async function fetchSchedules(): Promise<ScheduleWithMeta[]> {
 
   const active = mockSchedules.filter((s) => !s.deleted_at)
 
-  return active.map((schedule) => {
-    const volunteer = mockUsers.find((u) => u.id === schedule.volunteer_id)
-    const ministry = mockMinistries.find((m) => m.id === schedule.ministry_id)
-    const hasConflict = checkConflict(schedule, mockUnavailabilities)
+  return active
+    .map((schedule) => {
+      const event = mockEvents.find((e) => e.id === schedule.event_id)
+      const ministry = mockMinistries.find((m) => m.id === schedule.ministry_id)
+      const hasConflict = checkConflict(schedule, mockUnavailabilities)
 
-    return {
-      ...schedule,
-      volunteer_name: volunteer?.name ?? 'Desconhecido',
-      volunteer_avatar: volunteer?.avatar_url,
-      ministry_name: ministry?.name ?? 'Desconhecido',
-      ministry_color: ministry?.color ?? '#6B7280',
-      hasConflict,
-    }
-  })
+      const occurrenceDay = new Date(schedule.event_occurrence_date + 'T00:00:00').toLocaleDateString('pt-BR', { weekday: 'long' })
+      const matchingSlot = event?.recurrence_slots?.find(
+        (slot) => slot.day.toLowerCase() === occurrenceDay.toLowerCase(),
+      )
+      const eventTime = matchingSlot?.time ?? event?.time
+
+      return {
+        ...schedule,
+        event_name: event?.name ?? 'Evento desconhecido',
+        event_color: event?.color ?? '#6B7280',
+        event_icon: event?.icon ?? 'Calendar',
+        event_time: eventTime,
+        ministry_name: ministry?.name ?? 'Desconhecido',
+        ministry_color: ministry?.color ?? '#6B7280',
+        hasConflict,
+      }
+    })
+    .sort(
+      (a, b) =>
+        new Date(a.event_occurrence_date).getTime() -
+        new Date(b.event_occurrence_date).getTime(),
+    )
 }
 
 export function useSchedules() {

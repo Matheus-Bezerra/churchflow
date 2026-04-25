@@ -1,35 +1,42 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { Plus, Calendar, CheckCircle2, Clock, XCircle } from 'lucide-react'
-import { useSchedules } from '@/hooks/queries/useSchedules'
-import { StatsCard } from '@/components/features/dashboard/StatsCard'
-import { ScheduleTable } from '@/components/features/schedules/ScheduleTable'
-import { AvailabilityAlert } from '@/components/features/schedules/AvailabilityAlert'
-import { CreateScheduleModal } from '@/components/features/schedules/CreateScheduleModal'
-import { Button } from '@/components/ui/button'
+import { Calendar, CheckCircle2, Clock, Plus, XCircle } from 'lucide-react';
+import { useState } from 'react';
+import { StatsCard } from '@/components/features/dashboard/StatsCard';
+import { AvailabilityAlert } from '@/components/features/schedules/AvailabilityAlert';
+import { CreateScheduleModal } from '@/components/features/schedules/CreateScheduleModal';
+import { ScheduleTable } from '@/components/features/schedules/ScheduleTable';
+import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import type { ScheduleStatus } from '@/types/schedule'
+} from '@/components/ui/select';
+import { useSchedules } from '@/hooks/queries/useSchedules';
+import type { ScheduleStatus } from '@/types/schedule';
+
+const SCHEDULE_STATUS_FILTER_LABELS: Record<string, string> = {
+  all: 'Todos',
+  confirmed: 'Confirmados',
+  pending: 'Pendentes',
+  declined: 'Recusados',
+};
 
 export default function SchedulesPage() {
-  const [statusFilter, setStatusFilter] = useState<ScheduleStatus | 'all' | null>('all')
-  const [createOpen, setCreateOpen] = useState(false)
-  const { data: schedules = [], isLoading } = useSchedules()
+  const [statusFilter, setStatusFilter] = useState<ScheduleStatus | 'all' | null>('all');
+  const [createOpen, setCreateOpen] = useState(false);
+  const { data: schedules = [], isLoading } = useSchedules();
 
   const filtered =
     !statusFilter || statusFilter === 'all'
       ? schedules
-      : schedules.filter((s) => s.status === statusFilter)
+      : schedules.filter((s) => s.status === statusFilter);
 
-  const confirmed = schedules.filter((s) => s.status === 'confirmed').length
-  const pending = schedules.filter((s) => s.status === 'pending').length
-  const declined = schedules.filter((s) => s.status === 'declined').length
+  const confirmed = schedules.filter((s) => s.status === 'confirmed').length;
+  const pending = schedules.filter((s) => s.status === 'pending').length;
+  const declined = schedules.filter((s) => s.status === 'declined').length;
 
   return (
     <div className="space-y-6">
@@ -62,6 +69,7 @@ export default function SchedulesPage() {
           iconColor="text-emerald-600"
           iconBg="bg-emerald-50"
         />
+
         <StatsCard
           title="Pendentes"
           value={pending}
@@ -86,6 +94,7 @@ export default function SchedulesPage() {
         <Select
           value={statusFilter}
           onValueChange={(v) => setStatusFilter(v as ScheduleStatus | 'all')}
+          itemToStringLabel={(v) => SCHEDULE_STATUS_FILTER_LABELS[String(v)] ?? String(v)}
         >
           <SelectTrigger className="w-44 bg-white">
             <SelectValue placeholder="Filtrar por status" />
@@ -103,5 +112,5 @@ export default function SchedulesPage() {
       {/* Table */}
       <ScheduleTable schedules={filtered} isLoading={isLoading} />
     </div>
-  )
+  );
 }

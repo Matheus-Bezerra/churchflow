@@ -1,0 +1,2 @@
+#!/bin/sh
+sh .husky/validate-commit-msg.sh "$1"

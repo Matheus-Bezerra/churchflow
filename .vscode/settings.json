@@ -1,0 +1,75 @@
+{
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.biome": "explicit",
+    "source.organizeImports.biome": "explicit"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "biome.configurationPath": "./frontend/biome.json",
+  "biome.lsp.bin": {
+    "darwin-arm64": "./frontend/node_modules/@biomejs/cli-darwin-arm64/biome",
+    "darwin-x64": "./frontend/node_modules/@biomejs/cli-darwin-x64/biome",
+    "linux-x64": "./frontend/node_modules/@biomejs/cli-linux-x64/biome",
+    "linux-arm64": "./frontend/node_modules/@biomejs/cli-linux-arm64/biome",
+    "linux-x64-musl": "./frontend/node_modules/@biomejs/cli-linux-x64-musl/biome",
+    "linux-arm64-musl": "./frontend/node_modules/@biomejs/cli-linux-arm64-musl/biome",
+    "win32-x64": "./frontend/node_modules/@biomejs/cli-win32-x64/biome.exe",
+    "win32-arm64": "./frontend/node_modules/@biomejs/cli-win32-arm64/biome.exe"
+  },
+  "cSpell.language": "en,pt",
+  "cSpell.words": [
+    "Asaas",
+    "belluno",
+    "Belluno",
+    "brandmark",
+    "brindefly",
+    "Brindeflyer",
+    "childrens",
+    "cnpj",
+    "cooldown",
+    "ECOMMERCE",
+    "Embla",
+    "faqs",
+    "Focusable",
+    "frenet",
+    "generouted",
+    "hipercard",
+    "KONDUTO",
+    "Kubb",
+    "mastercard",
+    "nuqs",
+    "officedocument",
+    "openxmlformats",
+    "pinterest",
+    "selectables",
+    "skus",
+    "Skus",
+    "somarcas",
+    "sonner",
+    "spreadsheetml",
+    "termico",
+    "ultrawide",
+    "unconfigured",
+    "Unconfigured",
+    "usehooks",
+    "whatsapp",
+    "youtube"
+  ]
+}
