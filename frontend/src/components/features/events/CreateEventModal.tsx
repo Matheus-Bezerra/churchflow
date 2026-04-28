@@ -35,7 +35,10 @@ interface CreateEventModalProps {
   onOpenChange: (open: boolean) => void
 }
 
-export function CreateEventModal({ open, onOpenChange }: CreateEventModalProps) {
+export function CreateEventModal({
+  open,
+  onOpenChange,
+}: CreateEventModalProps) {
   const {
     form,
     isPending,
@@ -61,13 +64,13 @@ export function CreateEventModal({ open, onOpenChange }: CreateEventModalProps) 
     ministryPopoverOpen,
     setMinistryPopoverOpen,
     toggleMinistry,
-    selectedMinistriesLabel,
+    updateMinistryCount,
+    ministryRequirements,
     // watched
     selectedColor,
     recurring,
     recurrenceType,
     recurrenceSlots,
-    selectedMinistryIds,
   } = useEventForm({ onOpenChange })
 
   const {
@@ -164,13 +167,13 @@ export function CreateEventModal({ open, onOpenChange }: CreateEventModalProps) 
 
               {/* Ministries */}
               <EventMinistryPicker
-                selectedIds={selectedMinistryIds ?? []}
-                label={selectedMinistriesLabel}
+                requirements={ministryRequirements}
                 open={ministryPopoverOpen}
                 onOpenChange={setMinistryPopoverOpen}
                 onToggle={toggleMinistry}
+                onUpdateCount={updateMinistryCount}
                 error={
-                  errors.ministry_ids as
+                  errors.ministry_requirements as
                     | import('react-hook-form').FieldError
                     | undefined
                 }
@@ -203,7 +206,6 @@ export function CreateEventModal({ open, onOpenChange }: CreateEventModalProps) 
                 removeSlot={removeSlot}
                 dayOptions={dayOptions}
               />
-
             </div>
 
             <DialogFooter className="mx-0 mb-0 shrink-0">

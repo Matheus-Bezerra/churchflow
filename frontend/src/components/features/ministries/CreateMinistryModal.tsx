@@ -1,10 +1,11 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Plus } from 'lucide-react'
-import { useMemo, useRef } from 'react'
+import { Check, ChevronDown, Plus, X } from 'lucide-react'
+import { useMemo, useRef, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -16,25 +17,182 @@ import {
 } from '@/components/ui/dialog'
 import { Field, FieldError, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { PRESET_COLORS } from '@/constants/colors'
 import { useCreateMinistry } from '@/hooks/mutations/useCreateMinistry'
 import { getMinistryIcon, MINISTRY_ICON_NAMES } from '@/lib/iconMap'
 import { mockUsers } from '@/lib/mocks'
-import { cn } from '@/lib/utils'
+import { cn, getAvatarFallbackStyle, getInitials } from '@/lib/utils'
 import { type MinistryFormData, ministrySchema } from '@/schemas/ministry'
+import type { User } from '@/types/user'
 
 interface CreateMinistryModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
 }
+
+// ─── Multi-select inline component ────────────────────────────────────────────
+
+interface MultiSelectProps {
+  options: User[]
+  value: string[]
+  onChange: (value: string[]) => void
+  placeholder?: string
+  badgeLabel?: string
+}
+
+function MultiSelect({
+  options,
+  value,
+  onChange,
+  placeholder = 'Selecione...',
+  badgeLabel,
+}: MultiSelectProps) {
+  const [open, setOpen] = useState(false)
+  const [search, setSearch] = useState('')
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  const filtered = useMemo(
+    () =>
+      options.filter((u) =>
+        u.name.toLowerCase().includes(search.toLowerCase()),
+      ),
+    [options, search],
+  )
+
+  function toggle(id: string) {
+    onChange(value.includes(id) ? value.filter((v) => v !== id) : [...value, id])
+  }
+
+  function remove(id: string, e: React.MouseEvent) {
+    e.stopPropagation()
+    onChange(value.filter((v) => v !== id))
+  }
+
+  const selected = options.filter((u) => value.includes(u.id))
+
+  return (
+    <div ref={containerRef} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className={cn(
+          'flex min-h-10 w-full flex-wrap items-center gap-1.5 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+          open && 'ring-2 ring-ring',
+        )}
+      >
+        {selected.length === 0 ? (
+          <span className="text-muted-foreground">{placeholder}</span>
+        ) : (
+          selected.map((u) => (
+            <span
+              key={u.id}
+              className="bg-gray-100 flex gap-1 items-center pl-1 pr-1.5 py-0.5 rounded-full text-gray-700 text-xs"
+            >
+              <Avatar className="h-4 w-4">
+                <AvatarImage src={u.avatar_url} />
+                <AvatarFallback
+                  className="text-[8px]"
+                  style={getAvatarFallbackStyle(u.avatar_color)}
+                >
+                  {getInitials(u.name)}
+                </AvatarFallback>
+              </Avatar>
+              {u.name.split(' ')[0]}
+              {badgeLabel && (
+                <span className="ml-0.5 text-[10px] text-gray-400">
+                  · {badgeLabel}
+                </span>
+              )}
+              <button
+                type="button"
+                onClick={(e) => remove(u.id, e)}
+                className="ml-0.5 rounded-full hover:text-gray-900"
+              >
+                <X className="h-2.5 w-2.5" />
+              </button>
+            </span>
+          ))
+        )}
+        <ChevronDown
+          className={cn(
+            'ml-auto h-4 w-4 shrink-0 text-gray-400 transition-transform',
+            open && 'rotate-180',
+          )}
+        />
+      </button>
+
+      {open && (
+        <>
+          {/* backdrop */}
+          <button
+            type="button"
+            aria-label="Fechar"
+            className="fixed inset-0 z-40 cursor-default"
+            onClick={() => { setOpen(false); setSearch('') }}
+          />
+          <div className="absolute z-50 mt-1 w-full overflow-hidden rounded-md border bg-popover shadow-md">
+            <div className="border-b p-2">
+              <Input
+                autoFocus
+                placeholder="Buscar..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="h-8 text-sm"
+              />
+            </div>
+            <ul className="max-h-52 overflow-y-auto p-1">
+              {filtered.length === 0 ? (
+                <li className="py-4 text-center text-gray-400 text-xs">
+                  Nenhum resultado
+                </li>
+              ) : (
+                filtered.map((u) => {
+                  const checked = value.includes(u.id)
+                  return (
+                    <li key={u.id}>
+                      <button
+                        type="button"
+                        onClick={() => toggle(u.id)}
+                        className={cn(
+                          'flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm hover:bg-accent',
+                          checked && 'bg-accent/50',
+                        )}
+                      >
+                        <div
+                          className={cn(
+                            'flex h-4 w-4 shrink-0 items-center justify-center rounded border',
+                            checked
+                              ? 'border-blue-600 bg-blue-600'
+                              : 'border-gray-300',
+                          )}
+                        >
+                          {checked && <Check className="h-3 w-3 text-white" />}
+                        </div>
+                        <Avatar className="h-6 w-6">
+                          <AvatarImage src={u.avatar_url} />
+                          <AvatarFallback
+                            className="text-[10px]"
+                            style={getAvatarFallbackStyle(u.avatar_color)}
+                          >
+                            {getInitials(u.name)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="flex-1 text-left">{u.name}</span>
+                      </button>
+                    </li>
+                  )
+                })
+              )}
+            </ul>
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
+// ─── Modal ─────────────────────────────────────────────────────────────────────
 
 export function CreateMinistryModal({
   open,
@@ -42,14 +200,18 @@ export function CreateMinistryModal({
 }: CreateMinistryModalProps) {
   const { mutate, isPending } = useCreateMinistry()
 
-  const leaders = mockUsers.filter((u) =>
-    ['leader', 'pastor', 'elder', 'deacon'].includes(u.role),
+  const leaders = useMemo(
+    () =>
+      mockUsers.filter((u) =>
+        ['leader', 'pastor', 'elder', 'deacon'].includes(u.role),
+      ),
+    [],
   )
 
-  const leaderItemLabel = useMemo(() => {
-    const map = Object.fromEntries(leaders.map((u) => [u.id, u.name]))
-    return (id: string) => map[id] ?? id
-  }, [leaders])
+  const allMembers = useMemo(
+    () => mockUsers.filter((u) => u.status !== 'inactive' && !u.deleted_at),
+    [],
+  )
 
   const {
     register,
@@ -63,7 +225,8 @@ export function CreateMinistryModal({
     defaultValues: {
       name: '',
       description: '',
-      leader_id: '',
+      leader_ids: [],
+      volunteer_ids: [],
       meeting_day: 'Domingo',
       meeting_time: '09:00',
       icon: 'Music',
@@ -72,14 +235,22 @@ export function CreateMinistryModal({
   })
 
   const selectedColor = watch('color')
+  const selectedLeaderIds = watch('leader_ids')
   const colorInputRef = useRef<HTMLInputElement>(null)
+
+  const availableVolunteers = useMemo(
+    () => allMembers.filter((u) => !selectedLeaderIds?.includes(u.id)),
+    [allMembers, selectedLeaderIds],
+  )
 
   function onSubmit(data: MinistryFormData) {
     mutate(
       {
         name: data.name,
         description: data.description ?? '',
-        leader_id: data.leader_id,
+        leader_id: data.leader_ids[0],
+        leader_ids: data.leader_ids,
+        volunteer_ids: data.volunteer_ids ?? [],
         meeting_day: data.meeting_day,
         meeting_time: data.meeting_time,
         icon: data.icon,
@@ -146,36 +317,49 @@ export function CreateMinistryModal({
               />
             </Field>
 
-            {/* Leader */}
+            {/* Leaders (multi-select) */}
             <Controller
-              name="leader_id"
+              name="leader_ids"
               control={control}
               render={({ field }) => (
-                <Field data-invalid={!!errors.leader_id}>
-                  <FieldLabel>Líder responsável *</FieldLabel>
-                  <Select
-                    value={field.value}
-                    onValueChange={field.onChange}
-                    itemToStringLabel={leaderItemLabel}
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Selecione o líder" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {leaders.map((u) => (
-                        <SelectItem key={u.id} value={u.id}>
-                          {u.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                <Field data-invalid={!!errors.leader_ids}>
+                  <FieldLabel>Líderes responsáveis *</FieldLabel>
+                  <MultiSelect
+                    options={leaders}
+                    value={field.value ?? []}
+                    onChange={field.onChange}
+                    placeholder="Selecione um ou mais líderes"
+                    badgeLabel="Líder"
+                  />
                   <FieldError
-                    errors={errors.leader_id ? [errors.leader_id] : []}
+                    errors={
+                      errors.leader_ids
+                        ? [{ message: (errors.leader_ids as { message?: string }).message ?? 'Selecione ao menos um líder' }]
+                        : []
+                    }
                   />
                 </Field>
               )}
             />
 
+            {/* Volunteers (multi-select) */}
+            <Controller
+              name="volunteer_ids"
+              control={control}
+              render={({ field }) => (
+                <Field>
+                  <FieldLabel>Voluntários</FieldLabel>
+                  <MultiSelect
+                    options={availableVolunteers}
+                    value={field.value ?? []}
+                    onChange={field.onChange}
+                    placeholder="Adicione voluntários ao ministério"
+                  />
+                </Field>
+              )}
+            />
+
+            {/* Icon */}
             <Controller
               name="icon"
               control={control}

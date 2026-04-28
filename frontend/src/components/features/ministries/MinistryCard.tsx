@@ -2,8 +2,6 @@
 
 import {
   Calendar,
-  ChevronDown,
-  ChevronUp,
   Clock,
   MoreHorizontal,
   Pencil,
@@ -11,7 +9,6 @@ import {
   UserPlus,
   Users,
 } from 'lucide-react'
-import { useState } from 'react'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
@@ -24,10 +21,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Progress } from '@/components/ui/progress'
-import { useMinistryActivities } from '@/hooks/queries/useMinistries'
-import { formatDistanceToNow } from '@/lib/dateUtils'
 import { MINISTRY_ICONS } from '@/lib/iconMap'
-import { getUserById } from '@/lib/mocks'
+import { getUserById, mockUsers } from '@/lib/mocks'
+import { getAvatarFallbackStyle, getInitials } from '@/lib/utils'
 import type { Ministry } from '@/types/ministry'
 
 interface MinistryCardProps {
@@ -36,13 +32,20 @@ interface MinistryCardProps {
 }
 
 export function MinistryCard({ ministry, onDelete }: MinistryCardProps) {
-  const [expanded, setExpanded] = useState(false)
-  const { data: activities } = useMinistryActivities(
-    expanded ? ministry.id : '',
-  )
+  const Icon =
+    MINISTRY_ICONS[ministry.icon as keyof typeof MINISTRY_ICONS] ??
+    MINISTRY_ICONS.Music
 
-  const Icon = MINISTRY_ICONS[ministry.icon] ?? MINISTRY_ICONS.Music
-  const leader = getUserById(ministry.leader_id)
+  const leaders = ministry.leader_ids
+    ? ministry.leader_ids.map((id) => getUserById(id)).filter(Boolean)
+    : [getUserById(ministry.leader_id)].filter(Boolean)
+
+  const volunteers = ministry.volunteer_ids
+    ? ministry.volunteer_ids
+        .map((id) => mockUsers.find((u) => u.id === id))
+        .filter(Boolean)
+    : []
+
   const fillPercent = ministry.max_members
     ? Math.round((ministry.member_count / ministry.max_members) * 100)
     : 100
@@ -105,25 +108,66 @@ export function MinistryCard({ ministry, onDelete }: MinistryCardProps) {
           </p>
         )}
 
-        {/* Leader */}
-        {leader && (
-          <div className="mb-4 flex items-center gap-2">
-            <Avatar className="h-6 w-6">
-              <AvatarImage src={leader.avatar_url} />
-              <AvatarFallback className="bg-gray-100 text-[10px]">
-                {leader.name.slice(0, 2).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <span className="text-gray-600 text-xs">{leader.name}</span>
-            <Badge variant="secondary" className="ml-auto text-xs">
-              Líder
-            </Badge>
+        {/* Leaders */}
+        {leaders.length > 0 && (
+          <div className="mb-3 space-y-1.5">
+            <p className="font-medium text-[11px] text-gray-400 uppercase tracking-wide">
+              {leaders.length === 1 ? 'Líder' : 'Líderes'}
+            </p>
+            {leaders.map((leader) =>
+              leader ? (
+                <div key={leader.id} className="flex items-center gap-2">
+                  <Avatar className="h-6 w-6">
+                    <AvatarImage src={leader.avatar_url} />
+                    <AvatarFallback
+                      className="text-[10px]"
+                      style={getAvatarFallbackStyle(leader.avatar_color)}
+                    >
+                      {getInitials(leader.name)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="text-gray-600 text-xs">{leader.name}</span>
+                  <Badge variant="secondary" className="ml-auto text-[10px]">
+                    Líder
+                  </Badge>
+                </div>
+              ) : null,
+            )}
+          </div>
+        )}
+
+        {/* Volunteers */}
+        {volunteers.length > 0 && (
+          <div className="mb-3 space-y-1.5">
+            <p className="font-medium text-[11px] text-gray-400 uppercase tracking-wide">
+              Voluntários ({volunteers.length})
+            </p>
+            <div className="flex flex-wrap gap-1">
+              {volunteers.slice(0, 5).map((v) =>
+                v ? (
+                  <Avatar key={v.id} className="h-6 w-6" title={v.name}>
+                    <AvatarImage src={v.avatar_url} />
+                    <AvatarFallback
+                      className="text-[9px]"
+                      style={getAvatarFallbackStyle(v.avatar_color)}
+                    >
+                      {getInitials(v.name)}
+                    </AvatarFallback>
+                  </Avatar>
+                ) : null,
+              )}
+              {volunteers.length > 5 && (
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 text-[9px] text-gray-500">
+                  +{volunteers.length - 5}
+                </div>
+              )}
+            </div>
           </div>
         )}
 
         {/* Members progress */}
-        {ministry.max_members && (
-          <div className="mb-4 space-y-1.5">
+        {ministry.max_members ? (
+          <div className="space-y-1.5 border-gray-100 border-t pt-3">
             <div className="flex items-center justify-between text-gray-500 text-xs">
               <span className="flex items-center gap-1">
                 <Users className="h-3 w-3" />
@@ -133,44 +177,10 @@ export function MinistryCard({ ministry, onDelete }: MinistryCardProps) {
             </div>
             <Progress value={fillPercent} className="h-1.5" />
           </div>
-        )}
-
-        {/* Expand activities */}
-        <button
-          type="button"
-          onClick={() => setExpanded((p) => !p)}
-          className="flex w-full items-center justify-between border-gray-100 border-t pt-2 font-medium text-blue-600 text-xs transition-colors hover:text-blue-700"
-        >
-          <span>Atividade recente</span>
-          {expanded ? (
-            <ChevronUp className="h-3.5 w-3.5" />
-          ) : (
-            <ChevronDown className="h-3.5 w-3.5" />
-          )}
-        </button>
-
-        {expanded && (
-          <div className="mt-3 space-y-2">
-            {activities && activities.length > 0 ? (
-              activities.slice(0, 3).map((a) => (
-                <div key={a.id} className="flex items-start gap-2">
-                  <div
-                    className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full"
-                    style={{ backgroundColor: ministry.color }}
-                  />
-                  <div className="min-w-0 flex-1">
-                    <p className="text-gray-600 text-xs">{a.description}</p>
-                    <p className="text-[11px] text-gray-400">
-                      {formatDistanceToNow(a.created_at)}
-                    </p>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p className="text-gray-400 text-xs">
-                Nenhuma atividade registrada.
-              </p>
-            )}
+        ) : (
+          <div className="flex items-center gap-1 border-gray-100 border-t pt-3 text-gray-500 text-xs">
+            <Users className="h-3 w-3" />
+            {ministry.member_count} membros
           </div>
         )}
       </CardContent>

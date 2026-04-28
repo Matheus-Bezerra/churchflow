@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useBirthdays } from '@/hooks/queries/useDashboardStats'
 import { formatBirthday, formatBirthdayCountdown, getDaysUntilBirthday } from '@/lib/dateUtils'
+import { getAvatarFallbackStyle, getInitials } from '@/lib/utils'
 
 export function BirthdayList() {
   const { data: birthdays, isLoading } = useBirthdays()
@@ -44,8 +45,11 @@ export function BirthdayList() {
                 <div key={member.id} className="flex items-center gap-3">
                   <Avatar className="h-9 w-9">
                     <AvatarImage src={member.avatar_url} />
-                    <AvatarFallback className="bg-pink-50 font-semibold text-pink-600 text-xs">
-                      {member.name.slice(0, 2).toUpperCase()}
+                    <AvatarFallback
+                      className="font-semibold text-xs"
+                      style={getAvatarFallbackStyle(member.avatar_color)}
+                    >
+                      {getInitials(member.name)}
                     </AvatarFallback>
                   </Avatar>
                   <div className="min-w-0 flex-1">

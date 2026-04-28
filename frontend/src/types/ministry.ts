@@ -8,6 +8,8 @@ export interface Ministry {
   icon: string
   color: string
   leader_id: string
+  leader_ids?: string[]
+  volunteer_ids?: string[]
   meeting_day: string
   meeting_time: string
   status: MinistryStatus

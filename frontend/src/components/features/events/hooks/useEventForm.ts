@@ -5,11 +5,9 @@ import { useForm } from 'react-hook-form'
 import { MONTH_DAYS, WEEK_DAYS } from '@/constants/days'
 import { useCreateEvent } from '@/hooks/mutations/useCreateEvent'
 import type { EventIconName } from '@/lib/iconMap'
-import { mockEventTypes, mockMinistries } from '@/lib/mocks'
+import { mockEventTypes } from '@/lib/mocks'
 import { type EventFormData, eventSchema } from '@/schemas/event'
-import type { EventType, RecurrenceSlot } from '@/types/event'
-
-const activeMinistries = mockMinistries.filter((m) => !m.deleted_at)
+import type { EventType, MinistryRequirement, RecurrenceSlot } from '@/types/event'
 
 interface UseEventFormOptions {
   onOpenChange: (open: boolean) => void
@@ -32,7 +30,7 @@ export function useEventForm({ onOpenChange }: UseEventFormOptions) {
       type_id: '',
       icon: 'Calendar',
       color: '#8B5CF6',
-      ministry_ids: [],
+      ministry_requirements: [],
       recurring: false,
       recurrence_type: 'weekly',
       date: '',
@@ -47,7 +45,7 @@ export function useEventForm({ onOpenChange }: UseEventFormOptions) {
   const recurring = watch('recurring')
   const recurrenceType = watch('recurrence_type')
   const recurrenceSlots = (watch('recurrence_slots') ?? []) as RecurrenceSlot[]
-  const selectedMinistryIds = watch('ministry_ids')
+  const ministryRequirements = (watch('ministry_requirements') ?? []) as MinistryRequirement[]
 
   // ─── Event type handlers ─────────────────────────────────────────────────────
 
@@ -92,13 +90,25 @@ export function useEventForm({ onOpenChange }: UseEventFormOptions) {
     )
   }
 
-  // ─── Ministry toggle ─────────────────────────────────────────────────────
+  // ─── Ministry requirement handlers ───────────────────────────────────────
 
   function toggleMinistry(id: string) {
-    const current = selectedMinistryIds ?? []
+    const exists = ministryRequirements.find((r) => r.ministry_id === id)
     setValue(
-      'ministry_ids',
-      current.includes(id) ? current.filter((x) => x !== id) : [...current, id],
+      'ministry_requirements',
+      exists
+        ? ministryRequirements.filter((r) => r.ministry_id !== id)
+        : [...ministryRequirements, { ministry_id: id, required_count: 1 }],
+      { shouldValidate: true },
+    )
+  }
+
+  function updateMinistryCount(ministryId: string, count: number) {
+    setValue(
+      'ministry_requirements',
+      ministryRequirements.map((r) =>
+        r.ministry_id === ministryId ? { ...r, required_count: count } : r,
+      ),
       { shouldValidate: true },
     )
   }
@@ -106,6 +116,8 @@ export function useEventForm({ onOpenChange }: UseEventFormOptions) {
   // ─── Submit ──────────────────────────────────────────────────────────────
 
   function onSubmit(data: EventFormData) {
+    const ministry_ids = data.ministry_requirements.map((r) => r.ministry_id)
+
     mutate(
       {
         name: data.name,
@@ -113,7 +125,8 @@ export function useEventForm({ onOpenChange }: UseEventFormOptions) {
         type_id: data.type_id,
         icon: data.icon as EventIconName,
         color: data.color,
-        ministry_ids: data.ministry_ids,
+        ministry_ids,
+        ministry_requirements: data.ministry_requirements,
         recurring: data.recurring,
         recurrence_type: data.recurring ? data.recurrence_type : undefined,
         date: data.recurring ? undefined : data.date,
@@ -148,13 +161,6 @@ export function useEventForm({ onOpenChange }: UseEventFormOptions) {
   const typeItemLabel = (id: string) =>
     eventTypes.find((t) => t.id === id)?.label ?? id
 
-  const selectedMinistriesLabel = selectedMinistryIds?.length
-    ? selectedMinistryIds.length === 1
-      ? (activeMinistries.find((m) => m.id === selectedMinistryIds[0])?.name ??
-        '1 ministério')
-      : `${selectedMinistryIds.length} ministérios`
-    : 'Selecione ministérios'
-
   const dayOptions =
     recurrenceType === 'monthly' ? MONTH_DAYS.map(String) : [...WEEK_DAYS]
 
@@ -183,12 +189,12 @@ export function useEventForm({ onOpenChange }: UseEventFormOptions) {
     ministryPopoverOpen,
     setMinistryPopoverOpen,
     toggleMinistry,
-    selectedMinistriesLabel,
+    updateMinistryCount,
+    ministryRequirements,
     // watched values
     selectedColor,
     recurring,
     recurrenceType,
     recurrenceSlots,
-    selectedMinistryIds,
   }
 }

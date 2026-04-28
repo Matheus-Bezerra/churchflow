@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useRecentActivities } from '@/hooks/queries/useDashboardStats'
 import { formatDistanceToNow } from '@/lib/dateUtils'
+import { getAvatarFallbackStyle, getInitials } from '@/lib/utils'
 
 import { activityIcons } from './constants/activityIcons'
 
@@ -46,8 +47,11 @@ export function RecentActivity() {
                   <div className="relative">
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={activity.avatar_url} />
-                      <AvatarFallback className="bg-gray-100 text-gray-600 text-xs">
-                        {activity.user_name.slice(0, 2).toUpperCase()}
+                      <AvatarFallback
+                        className="text-xs"
+                        style={getAvatarFallbackStyle(activity.avatar_color)}
+                      >
+                        {getInitials(activity.user_name)}
                       </AvatarFallback>
                     </Avatar>
                     <span className="absolute -right-0.5 -bottom-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-white ring-1 ring-gray-200">

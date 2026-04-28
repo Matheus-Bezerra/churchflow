@@ -33,8 +33,8 @@ import {
   mockUnavailabilities,
   mockUsers,
 } from '@/lib/mocks'
-import { scheduleSchema, type ScheduleFormData } from '@/schemas/schedule'
-import { cn } from '@/lib/utils'
+import { cn, getAvatarFallbackStyle, getInitials } from '@/lib/utils'
+import { type ScheduleFormData, scheduleSchema } from '@/schemas/schedule'
 import { getNextOccurrences } from '@/utils/helpers/eventOccurrences'
 
 interface CreateScheduleModalProps {
@@ -132,7 +132,10 @@ export function CreateScheduleModal({
     datesToSchedule.forEach((date, i) => {
       mutate(
         {
-          name: datesToSchedule.length > 1 ? `${data.name} (${i + 1}/${datesToSchedule.length})` : data.name,
+          name:
+            datesToSchedule.length > 1
+              ? `${data.name} (${i + 1}/${datesToSchedule.length})`
+              : data.name,
           event_id: data.event_id,
           event_occurrence_date: date,
           ministry_id: data.ministry_id,
@@ -201,7 +204,9 @@ export function CreateScheduleModal({
                   <FieldLabel>Evento *</FieldLabel>
                   <Select
                     value={field.value}
-                    onValueChange={(id) => handleEventChange(id ?? '', field.onChange)}
+                    onValueChange={(id) =>
+                      handleEventChange(id ?? '', field.onChange)
+                    }
                     itemToStringLabel={eventItemLabel}
                   >
                     <SelectTrigger className="w-full">
@@ -248,7 +253,12 @@ export function CreateScheduleModal({
                         itemToStringLabel={(v) =>
                           new Date(v + 'T00:00:00').toLocaleDateString(
                             'pt-BR',
-                            { day: '2-digit', month: 'short', year: 'numeric', weekday: 'short' },
+                            {
+                              day: '2-digit',
+                              month: 'short',
+                              year: 'numeric',
+                              weekday: 'short',
+                            },
                           )
                         }
                       >
@@ -260,7 +270,12 @@ export function CreateScheduleModal({
                             <SelectItem key={d} value={d}>
                               {new Date(d + 'T00:00:00').toLocaleDateString(
                                 'pt-BR',
-                                { day: '2-digit', month: 'short', year: 'numeric', weekday: 'short' },
+                                {
+                                  day: '2-digit',
+                                  month: 'short',
+                                  year: 'numeric',
+                                  weekday: 'short',
+                                },
                               )}
                             </SelectItem>
                           ))}
@@ -270,9 +285,7 @@ export function CreateScheduleModal({
                       <Input
                         type="date"
                         value={
-                          selectedEvent.date
-                            ? selectedEvent.date
-                            : field.value
+                          selectedEvent.date ? selectedEvent.date : field.value
                         }
                         readOnly={!!selectedEvent.date}
                         onChange={field.onChange}
@@ -368,7 +381,8 @@ export function CreateScheduleModal({
                         <div className="mb-2 flex items-center gap-1.5 text-amber-700 text-xs">
                           <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
                           <span>
-                            {user?.name ?? 'Voluntário'} está indisponível nesta data
+                            {user?.name ?? 'Voluntário'} está indisponível nesta
+                            data
                           </span>
                         </div>
                       )}
@@ -376,8 +390,11 @@ export function CreateScheduleModal({
                         {user && (
                           <Avatar className="h-8 w-8 shrink-0">
                             <AvatarImage src={user.avatar_url} />
-                            <AvatarFallback className="bg-gray-100 text-[10px]">
-                              {user.name.slice(0, 2).toUpperCase()}
+                            <AvatarFallback
+                              className="text-[10px]"
+                              style={getAvatarFallbackStyle(user.avatar_color)}
+                            >
+                              {getInitials(user.name)}
                             </AvatarFallback>
                           </Avatar>
                         )}
@@ -493,7 +510,9 @@ export function CreateScheduleModal({
                         <Select
                           value={String(field.value ?? 1)}
                           onValueChange={(v) => field.onChange(Number(v))}
-                          itemToStringLabel={(v) => `${v} ocorrência${Number(v) > 1 ? 's' : ''}`}
+                          itemToStringLabel={(v) =>
+                            `${v} ocorrência${Number(v) > 1 ? 's' : ''}`
+                          }
                         >
                           <SelectTrigger className="w-full">
                             <SelectValue />

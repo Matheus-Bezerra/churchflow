@@ -3,20 +3,28 @@
 import { ImageIcon, Plus, Upload, X } from 'lucide-react'
 import { useRef, useState } from 'react'
 
+import { PRESET_COLORS } from '@/constants/colors'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
-
-import { dicebearUrl, PRESET_SEEDS } from './utils/avatar'
+import { cn, getAvatarFallbackStyle, getInitials } from '@/lib/utils'
 
 interface AvatarPickerProps {
   value: string | undefined
   onChange: (value: string | undefined) => void
+  memberName?: string
+  avatarColor?: string
+  onAvatarColorChange?: (value: string) => void
   name?: string
 }
 
-export function AvatarPicker({ value, onChange, name }: AvatarPickerProps) {
-  const [tab, setTab] = useState<'upload' | 'preset'>('preset')
+export function AvatarPicker({
+  value,
+  onChange,
+  memberName,
+  avatarColor,
+  onAvatarColorChange,
+  name,
+}: AvatarPickerProps) {
   const [open, setOpen] = useState(false)
   const [fileError, setFileError] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -51,8 +59,17 @@ export function AvatarPicker({ value, onChange, name }: AvatarPickerProps) {
           >
             <Avatar className="h-20 w-20 ring-2 ring-blue-100">
               <AvatarImage src={value} />
-              <AvatarFallback className="bg-gray-100 text-gray-400">
-                <ImageIcon className="h-8 w-8" />
+              <AvatarFallback
+                className="font-semibold text-gray-400"
+                style={getAvatarFallbackStyle(avatarColor)}
+              >
+                {memberName ? (
+                  <span className="text-lg">
+                    {getInitials(memberName)}
+                  </span>
+                ) : (
+                  <ImageIcon className="h-8 w-8" />
+                )}
               </AvatarFallback>
             </Avatar>
           </button>
@@ -105,97 +122,53 @@ export function AvatarPicker({ value, onChange, name }: AvatarPickerProps) {
         </div>
       </div>
 
+      {onAvatarColorChange && (
+        <div>
+          <p className="mb-2 font-medium text-gray-900 text-sm">Cor do avatar</p>
+          <div className="flex flex-wrap items-center gap-2">
+            {PRESET_COLORS.map((color) => (
+              <button
+                key={color.value}
+                type="button"
+                title={color.label}
+                onClick={() => onAvatarColorChange(color.value)}
+                className={cn(
+                  'h-7 w-7 rounded-full border-2 transition-transform hover:scale-110',
+                  avatarColor === color.value
+                    ? 'scale-110 border-gray-900'
+                    : 'border-transparent',
+                )}
+                style={{ backgroundColor: color.value }}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Panel (collapsible) */}
       {open && (
         <div className="rounded-xl border border-gray-200 bg-white p-3">
-          {/* Tabs */}
-          <div className="flex w-full overflow-hidden rounded-lg border border-gray-200 text-sm">
-            <button
+          <div className="flex w-full flex-col items-center gap-2">
+            <input
+              ref={inputRef}
+              type="file"
+              accept="image/*"
+              name={name}
+              className="hidden"
+              onChange={handleFileChange}
+            />
+            <Button
               type="button"
-              onClick={() => setTab('preset')}
-              className={cn(
-                'flex-1 py-1.5 font-medium transition-colors',
-                tab === 'preset'
-                  ? 'bg-blue-50 text-blue-700'
-                  : 'bg-white text-gray-500 hover:bg-gray-50',
-              )}
+              variant="outline"
+              className="w-full"
+              onClick={() => inputRef.current?.click()}
             >
-              Avatares
-            </button>
-            <button
-              type="button"
-              onClick={() => setTab('upload')}
-              className={cn(
-                'flex-1 py-1.5 font-medium transition-colors',
-                tab === 'upload'
-                  ? 'bg-blue-50 text-blue-700'
-                  : 'bg-white text-gray-500 hover:bg-gray-50',
-              )}
-            >
-              Enviar foto
-            </button>
+              <Upload className="mr-2 h-4 w-4" />
+              Escolher arquivo
+            </Button>
+            <p className="text-gray-400 text-xs">JPG, PNG ou WebP • máx. 2 MB</p>
+            {fileError && <p className="text-red-500 text-xs">{fileError}</p>}
           </div>
-
-          {/* Preset grid */}
-          {tab === 'preset' && (
-            <div className="mt-3 grid max-h-48 grid-cols-6 gap-2 overflow-auto pr-1">
-              {PRESET_SEEDS.map((seed) => {
-                const url = dicebearUrl(seed)
-                const selected = value === url
-                return (
-                  <button
-                    key={seed}
-                    type="button"
-                    onClick={() => {
-                      onChange(url)
-                      setOpen(false)
-                    }}
-                    className={cn(
-                      'flex items-center justify-center rounded-lg border p-1.5 transition-colors',
-                      selected
-                        ? 'border-blue-500 bg-blue-50'
-                        : 'border-gray-200 hover:border-gray-300',
-                    )}
-                    title={seed}
-                  >
-                    <Avatar className="h-9 w-9">
-                      <AvatarImage src={url} />
-                      <AvatarFallback className="bg-gray-100 text-[10px] text-gray-400">
-                        {seed.slice(0, 2).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                  </button>
-                )
-              })}
-            </div>
-          )}
-
-          {/* Upload */}
-          {tab === 'upload' && (
-            <div className="mt-3 flex w-full flex-col items-center gap-2">
-              <input
-                ref={inputRef}
-                type="file"
-                accept="image/*"
-                name={name}
-                className="hidden"
-                onChange={handleFileChange}
-              />
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full"
-                onClick={() => inputRef.current?.click()}
-              >
-                <Upload className="mr-2 h-4 w-4" />
-                Escolher arquivo
-              </Button>
-              <p className="text-gray-400 text-xs">
-                JPG, PNG ou WebP • máx. 2 MB
-              </p>
-              {fileError && <p className="text-red-500 text-xs">{fileError}</p>}
-            </div>
-          )}
         </div>
       )}
     </div>

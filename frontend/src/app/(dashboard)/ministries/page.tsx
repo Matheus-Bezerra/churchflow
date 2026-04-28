@@ -1,6 +1,6 @@
 'use client'
 
-import { Calendar, Music, Plus, Search, TrendingUp, Users } from 'lucide-react'
+import { Music, Plus, Search, TrendingUp, UserPlus, Users } from 'lucide-react'
 import { useState } from 'react'
 
 import { StatsCard } from '@/components/features/dashboard/StatsCard'
@@ -40,7 +40,22 @@ export default function MinistriesPage() {
   const { mutate: deleteMinistry } = useDeleteMinistry()
 
   const totalVolunteers = ministries.reduce((sum, m) => sum + m.member_count, 0)
-  const activeSchedules = 8 // from stats mock
+  const ministriesWithCapacity = ministries.filter(
+    (ministry) => typeof ministry.max_members === 'number' && ministry.max_members > 0,
+  )
+  const totalOpenSlots = ministriesWithCapacity.reduce((sum, ministry) => {
+    const openSlots = ministry.max_members! - ministry.member_count
+    return sum + Math.max(openSlots, 0)
+  }, 0)
+  const ministriesWithOpenSlots = ministriesWithCapacity.filter(
+    (ministry) => ministry.max_members! > ministry.member_count,
+  ).length
+  const totalCapacity = ministriesWithCapacity.reduce(
+    (sum, ministry) => sum + ministry.max_members!,
+    0,
+  )
+  const coverageRate =
+    totalCapacity > 0 ? Math.round((totalVolunteers / totalCapacity) * 100) : 0
 
   return (
     <div className="space-y-6">
@@ -78,15 +93,17 @@ export default function MinistriesPage() {
           iconBg="bg-blue-50"
         />
         <StatsCard
-          title="Escalas Ativas"
-          value={activeSchedules}
-          icon={Calendar}
+          title="Vagas em Aberto"
+          value={totalOpenSlots}
+          description={`${ministriesWithOpenSlots} ministério(s) com vagas`}
+          icon={UserPlus}
           iconColor="text-emerald-600"
           iconBg="bg-emerald-50"
         />
         <StatsCard
-          title="Novos no Mês"
-          value={stats?.new_members_this_month ?? 0}
+          title="Taxa de Cobertura"
+          value={`${coverageRate}%`}
+          description="Ocupação das vagas configuradas"
           icon={TrendingUp}
           iconColor="text-orange-500"
           iconBg="bg-orange-50"

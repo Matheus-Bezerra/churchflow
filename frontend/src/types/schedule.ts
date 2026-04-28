@@ -37,5 +37,6 @@ export interface RecentActivity {
   description: string
   user_name: string
   avatar_url?: string
+  avatar_color?: string
   created_at: string
 }

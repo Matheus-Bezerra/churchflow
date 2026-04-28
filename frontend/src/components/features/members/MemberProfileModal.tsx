@@ -14,6 +14,7 @@ import { Separator } from '@/components/ui/separator'
 import { useMemberFunctions } from '@/hooks/queries/useMemberFunctions'
 import { formatDate } from '@/lib/dateUtils'
 import { mockCells, mockMinistries } from '@/lib/mocks'
+import { getAvatarFallbackStyle, getInitials } from '@/lib/utils'
 import type { User } from '@/types/user'
 
 import { MEMBER_ROLE_LABELS, MEMBER_STATUS_CONFIG } from './constants/labels'
@@ -55,8 +56,11 @@ export function MemberProfileModal({
           <div className="flex items-center gap-4">
             <Avatar className="h-16 w-16">
               <AvatarImage src={member.avatar_url} />
-              <AvatarFallback className="bg-blue-100 font-bold text-blue-700 text-lg">
-                {member.name.slice(0, 2).toUpperCase()}
+              <AvatarFallback
+                className="font-bold text-lg"
+                style={getAvatarFallbackStyle(member.avatar_color)}
+              >
+                {getInitials(member.name)}
               </AvatarFallback>
             </Avatar>
             <div>

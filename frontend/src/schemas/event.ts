@@ -1,12 +1,19 @@
 import { z } from 'zod'
 
+const ministryRequirementSchema = z.object({
+  ministry_id: z.string(),
+  required_count: z.number().int().min(1, 'Mínimo 1 pessoa'),
+})
+
 const baseEventSchema = z.object({
   name: z.string().min(3, 'Nome deve ter ao menos 3 caracteres'),
   description: z.string().max(300, 'Máximo de 300 caracteres').optional(),
   type_id: z.string().min(1, 'Selecione um tipo'),
   icon: z.string().min(1, 'Selecione um ícone'),
   color: z.string().min(1, 'Selecione uma cor'),
-  ministry_ids: z.array(z.string()).min(1, 'Selecione ao menos um ministério'),
+  ministry_requirements: z
+    .array(ministryRequirementSchema)
+    .min(1, 'Selecione ao menos um ministério'),
   recurring: z.boolean(),
   recurrence_type: z.enum(['weekly', 'monthly']).optional(),
   date: z.string().optional(),

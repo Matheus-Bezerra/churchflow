@@ -18,6 +18,11 @@ export interface RecurrenceSlot {
   time: string
 }
 
+export interface MinistryRequirement {
+  ministry_id: string
+  required_count: number
+}
+
 export interface ChurchEvent {
   id: string
   church_id: string
@@ -32,6 +37,7 @@ export interface ChurchEvent {
   time?: string
   recurrence_slots: RecurrenceSlot[]
   ministry_ids: string[]
+  ministry_requirements: MinistryRequirement[]
   created_at: string
   updated_at: string
   deleted_at: string | null

@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/tooltip'
 import { formatDate } from '@/lib/dateUtils'
 import { mockUsers } from '@/lib/mocks'
-import { cn } from '@/lib/utils'
+import { cn, getAvatarFallbackStyle, getInitials } from '@/lib/utils'
 import type { ScheduleWithMeta } from '@/types/schedule'
 
 import { MAX_AVATAR_STACK, SCHEDULE_STATUS_CONFIG } from './constants'
@@ -158,10 +158,11 @@ export function ScheduleTable({ schedules, isLoading }: ScheduleTableProps) {
                               <TooltipTrigger>
                                 <Avatar className="h-7 w-7 border-2 border-white">
                                   <AvatarImage src={user?.avatar_url} />
-                                  <AvatarFallback className="bg-gray-100 text-[9px]">
-                                    {(user?.name ?? '?')
-                                      .slice(0, 2)
-                                      .toUpperCase()}
+                                  <AvatarFallback
+                                    className="text-[9px]"
+                                    style={getAvatarFallbackStyle(user?.avatar_color)}
+                                  >
+                                    {getInitials(user?.name ?? '?')}
                                   </AvatarFallback>
                                 </Avatar>
                               </TooltipTrigger>

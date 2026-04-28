@@ -150,22 +150,37 @@ export function EventCard({ event, onDelete }: EventCardProps) {
 
         {/* Ministries */}
         {ministries.length > 0 && (
-          <div className="flex flex-wrap items-center gap-1.5 border-gray-100 border-t pt-3">
-            <Users className="h-3.5 w-3.5 shrink-0 text-gray-400" />
-            {visibleMinistries.map((m) => (
-              <Badge
-                key={m.id}
-                className="text-[11px]"
-                style={{ backgroundColor: `${m.color}18`, color: m.color }}
-              >
-                {m.name}
-              </Badge>
-            ))}
-            {extraCount > 0 && (
-              <Badge className="bg-gray-100 text-[11px] text-gray-500">
-                +{extraCount}
-              </Badge>
-            )}
+          <div className="space-y-1.5 border-gray-100 border-t pt-3">
+            <div className="flex items-center gap-1 text-gray-400 text-xs">
+              <Users className="h-3.5 w-3.5 shrink-0" />
+              <span>Ministérios</span>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {visibleMinistries.map((m) => {
+                const req = event.ministry_requirements?.find(
+                  (r) => r.ministry_id === m.id,
+                )
+                return (
+                  <Badge
+                    key={m.id}
+                    className="gap-1 text-[11px]"
+                    style={{ backgroundColor: `${m.color}18`, color: m.color }}
+                  >
+                    {m.name}
+                    {req && (
+                      <span className="ml-0.5 opacity-70">
+                        · {req.required_count}p
+                      </span>
+                    )}
+                  </Badge>
+                )
+              })}
+              {extraCount > 0 && (
+                <Badge className="bg-gray-100 text-[11px] text-gray-500">
+                  +{extraCount}
+                </Badge>
+              )}
+            </div>
           </div>
         )}
       </CardContent>

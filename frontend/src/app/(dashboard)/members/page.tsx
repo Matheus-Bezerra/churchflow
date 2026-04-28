@@ -15,7 +15,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { useDashboardStats } from '@/hooks/queries/useDashboardStats'
+import {
+  useDashboardStats,
+  useRecentActivities,
+} from '@/hooks/queries/useDashboardStats'
 import { useMembers } from '@/hooks/queries/useMembers'
 import { mockMinistries } from '@/lib/mocks'
 import type { MemberStatus } from '@/types/user'
@@ -46,6 +49,10 @@ export default function MembersPage() {
   })
 
   const { data: stats } = useDashboardStats()
+  const { data: activities = [] } = useRecentActivities()
+  const recentBaptizedCount = activities.filter(
+    (a) => a.type === 'member_baptized',
+  ).length
 
   return (
     <div className="space-y-6">
@@ -100,6 +107,10 @@ export default function MembersPage() {
           icon={Droplets}
           iconColor="text-sky-600"
           iconBg="bg-sky-50"
+          trend={{
+            value: `${Math.max(1, recentBaptizedCount)} batizado no mês`,
+            positive: true,
+          }}
         />
       </div>
 
@@ -126,9 +137,24 @@ export default function MembersPage() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Todos os status</SelectItem>
-            <SelectItem value="active">Ativos</SelectItem>
-            <SelectItem value="visitor">Visitantes</SelectItem>
-            <SelectItem value="inactive">Inativos</SelectItem>
+            <SelectItem value="active">
+              <div className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                Ativos
+              </div>
+            </SelectItem>
+            <SelectItem value="visitor">
+              <div className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-blue-500" />
+                Visitantes
+              </div>
+            </SelectItem>
+            <SelectItem value="inactive">
+              <div className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-gray-400" />
+                Inativos
+              </div>
+            </SelectItem>
           </SelectContent>
         </Select>
         <Select

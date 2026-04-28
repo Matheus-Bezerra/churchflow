@@ -1,6 +1,13 @@
 'use client'
 
-import { Eye, MoreHorizontal, Pencil, UserCheck, UserX } from 'lucide-react'
+import {
+  Eye,
+  MessageCircle,
+  MoreHorizontal,
+  Pencil,
+  UserCheck,
+  UserX,
+} from 'lucide-react'
 import { useState } from 'react'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -22,9 +29,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { mockCells, mockMinistries } from '@/lib/mocks'
-import type { User } from '@/types/user'
 import { useMemberFunctions } from '@/hooks/queries/useMemberFunctions'
+import { mockCells, mockMinistries } from '@/lib/mocks'
+import { getAvatarFallbackStyle, getInitials } from '@/lib/utils'
+import type { User } from '@/types/user'
 
 import {
   MEMBER_PAGE_SIZE,
@@ -60,6 +68,14 @@ export function MembersTable({ members, isLoading }: MembersTableProps) {
     setProfileOpen(true)
   }
 
+  function whatsappLink(phone?: string) {
+    if (!phone) return null
+    const digits = phone.replace(/\D/g, '')
+    if (!digits) return null
+    const withCountry = digits.startsWith('55') ? digits : `55${digits}`
+    return `https://wa.me/${withCountry}`
+  }
+
   if (isLoading) {
     return (
       <div className="space-y-2">
@@ -85,6 +101,7 @@ export function MembersTable({ members, isLoading }: MembersTableProps) {
               <TableHead className="hidden font-semibold text-gray-600 md:table-cell">
                 Contato
               </TableHead>
+
               <TableHead className="hidden font-semibold text-gray-600 lg:table-cell">
                 Função
               </TableHead>
@@ -97,6 +114,9 @@ export function MembersTable({ members, isLoading }: MembersTableProps) {
               <TableHead className="font-semibold text-gray-600">
                 Status
               </TableHead>
+              <TableHead className="w-10 text-center font-semibold text-gray-600">
+                WhatsApp
+              </TableHead>
               <TableHead className="w-10" />
             </TableRow>
           </TableHeader>
@@ -104,7 +124,7 @@ export function MembersTable({ members, isLoading }: MembersTableProps) {
             {paginated.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={7}
+                  colSpan={8}
                   className="py-12 text-center text-gray-400"
                 >
                   Nenhum membro encontrado.
@@ -118,14 +138,22 @@ export function MembersTable({ members, isLoading }: MembersTableProps) {
                   member.ministry_ids.includes(m.id),
                 )
 
+                const hasWhatsapp = Boolean(
+                  member.phone && member.phone_is_whatsapp,
+                )
+                const whatsappUrl = whatsappLink(member.phone)
+
                 return (
                   <TableRow key={member.id} className="hover:bg-gray-50/50">
                     <TableCell>
                       <div className="flex items-center gap-3">
                         <Avatar className="h-9 w-9">
                           <AvatarImage src={member.avatar_url} />
-                          <AvatarFallback className="bg-blue-100 font-semibold text-blue-700 text-xs">
-                            {member.name.slice(0, 2).toUpperCase()}
+                          <AvatarFallback
+                            className="font-semibold text-xs"
+                            style={getAvatarFallbackStyle(member.avatar_color)}
+                          >
+                            {getInitials(member.name)}
                           </AvatarFallback>
                         </Avatar>
                         <div>
@@ -144,6 +172,7 @@ export function MembersTable({ members, isLoading }: MembersTableProps) {
                         <p className="text-gray-400 text-xs">{member.phone}</p>
                       </div>
                     </TableCell>
+
                     <TableCell className="hidden lg:table-cell">
                       <span className="text-gray-600 text-sm">
                         {roleLabel(String(member.role))}
@@ -151,7 +180,7 @@ export function MembersTable({ members, isLoading }: MembersTableProps) {
                     </TableCell>
                     <TableCell className="hidden xl:table-cell">
                       <div className="flex flex-wrap gap-1">
-                        {ministries.slice(0, 2).map((m) => (
+                        {ministries.slice(0, 1).map((m) => (
                           <Badge
                             key={m.id}
                             variant="secondary"
@@ -164,9 +193,9 @@ export function MembersTable({ members, isLoading }: MembersTableProps) {
                             {m.name.split(' ')[0]}
                           </Badge>
                         ))}
-                        {ministries.length > 2 && (
+                        {ministries.length > 1 && (
                           <Badge variant="secondary" className="text-xs">
-                            +{ministries.length - 2}
+                            +{ministries.length - 1}
                           </Badge>
                         )}
                       </div>
@@ -180,6 +209,36 @@ export function MembersTable({ members, isLoading }: MembersTableProps) {
                       <Badge className={statusCfg.className}>
                         {statusCfg.label}
                       </Badge>
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {hasWhatsapp ? (
+                        <a
+                          href={whatsappUrl ?? ''}
+                          target="_blank"
+                          rel="noreferrer"
+                          aria-label={`Chamar ${member.name} no WhatsApp`}
+                        >
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon-sm"
+                            className="text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700"
+                          >
+                            <MessageCircle className="h-4 w-4" />
+                          </Button>
+                        </a>
+                      ) : (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon-sm"
+                          className="cursor-not-allowed text-gray-300"
+                          disabled
+                          aria-label="Sem telefone"
+                        >
+                          <MessageCircle className="h-4 w-4" />
+                        </Button>
+                      )}
                     </TableCell>
                     <TableCell>
                       <DropdownMenu>

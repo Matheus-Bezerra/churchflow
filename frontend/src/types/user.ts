@@ -16,7 +16,9 @@ export interface User {
   name: string
   email: string
   phone?: string
+  phone_is_whatsapp?: boolean
   avatar_url?: string
+  avatar_color?: string
   role: MemberRole
   status: MemberStatus
   baptized: boolean

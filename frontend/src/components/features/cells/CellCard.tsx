@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useLeaderName } from '@/hooks/queries/useCells'
 import { mockUsers } from '@/lib/mocks'
+import { getAvatarFallbackStyle, getInitials } from '@/lib/utils'
 import type { Cell } from '@/types/church'
 
 import { DAY_COLORS } from './constants'
@@ -92,8 +93,11 @@ export function CellCard({ cell }: CellCardProps) {
         {leader && (
           <div className="mb-4 flex items-center gap-2">
             <Avatar className="h-7 w-7">
-              <AvatarFallback className="bg-blue-50 font-semibold text-[10px] text-blue-700">
-                {leaderName.slice(0, 2).toUpperCase()}
+              <AvatarFallback
+                className="font-semibold text-[10px]"
+                style={getAvatarFallbackStyle(leader.avatar_color)}
+              >
+                {getInitials(leaderName)}
               </AvatarFallback>
             </Avatar>
             <div className="min-w-0">
