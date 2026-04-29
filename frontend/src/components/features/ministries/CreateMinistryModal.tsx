@@ -1,7 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Check, ChevronDown, Plus, X } from 'lucide-react'
+import { Check, ChevronDown, Plus, Star, X } from 'lucide-react'
 import { useMemo, useRef, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 
@@ -61,7 +61,9 @@ function MultiSelect({
   )
 
   function toggle(id: string) {
-    onChange(value.includes(id) ? value.filter((v) => v !== id) : [...value, id])
+    onChange(
+      value.includes(id) ? value.filter((v) => v !== id) : [...value, id],
+    )
   }
 
   function remove(id: string, e: React.MouseEvent) {
@@ -87,7 +89,7 @@ function MultiSelect({
           selected.map((u) => (
             <span
               key={u.id}
-              className="bg-gray-100 flex gap-1 items-center pl-1 pr-1.5 py-0.5 rounded-full text-gray-700 text-xs"
+              className="flex items-center gap-1 rounded-full bg-gray-100 py-0.5 pr-1.5 pl-1 text-gray-700 text-xs"
             >
               <Avatar className="h-4 w-4">
                 <AvatarImage src={u.avatar_url} />
@@ -129,7 +131,10 @@ function MultiSelect({
             type="button"
             aria-label="Fechar"
             className="fixed inset-0 z-40 cursor-default"
-            onClick={() => { setOpen(false); setSearch('') }}
+            onClick={() => {
+              setOpen(false)
+              setSearch('')
+            }}
           />
           <div className="absolute z-50 mt-1 w-full overflow-hidden rounded-md border bg-popover shadow-md">
             <div className="border-b p-2">
@@ -226,9 +231,9 @@ export function CreateMinistryModal({
       name: '',
       description: '',
       leader_ids: [],
+      primary_leader_id: undefined,
       volunteer_ids: [],
-      meeting_day: 'Domingo',
-      meeting_time: '09:00',
+      max_members: 20,
       icon: 'Music',
       color: '#8B5CF6',
     },
@@ -236,6 +241,7 @@ export function CreateMinistryModal({
 
   const selectedColor = watch('color')
   const selectedLeaderIds = watch('leader_ids')
+  const selectedPrimaryLeaderId = watch('primary_leader_id')
   const colorInputRef = useRef<HTMLInputElement>(null)
 
   const availableVolunteers = useMemo(
@@ -244,21 +250,26 @@ export function CreateMinistryModal({
   )
 
   function onSubmit(data: MinistryFormData) {
+    const primaryLeaderId = data.primary_leader_id
+    const normalizedPrimaryLeaderId =
+      primaryLeaderId && data.leader_ids.includes(primaryLeaderId)
+        ? primaryLeaderId
+        : undefined
+
     mutate(
       {
         name: data.name,
         description: data.description ?? '',
-        leader_id: data.leader_ids[0],
+        leader_id: normalizedPrimaryLeaderId ?? data.leader_ids[0],
         leader_ids: data.leader_ids,
+        primary_leader_id: normalizedPrimaryLeaderId,
         volunteer_ids: data.volunteer_ids ?? [],
-        meeting_day: data.meeting_day,
-        meeting_time: data.meeting_time,
         icon: data.icon,
         color: data.color,
         church_id: 'church-1',
         status: 'active',
         member_count: 0,
-        max_members: 20,
+        max_members: data.max_members,
       },
       {
         onSuccess: () => {
@@ -334,12 +345,98 @@ export function CreateMinistryModal({
                   <FieldError
                     errors={
                       errors.leader_ids
-                        ? [{ message: (errors.leader_ids as { message?: string }).message ?? 'Selecione ao menos um líder' }]
+                        ? [
+                            {
+                              message:
+                                (errors.leader_ids as { message?: string })
+                                  .message ?? 'Selecione ao menos um líder',
+                            },
+                          ]
                         : []
                     }
                   />
                 </Field>
               )}
+            />
+
+            {/* Primary leader (optional) */}
+            <Controller
+              name="primary_leader_id"
+              control={control}
+              render={({ field }) => {
+                const selectedLeaders = leaders.filter((leader) =>
+                  (selectedLeaderIds ?? []).includes(leader.id),
+                )
+
+                return (
+                  <Field>
+                    <FieldLabel>Líder principal (opcional)</FieldLabel>
+                    {selectedLeaders.length === 0 ? (
+                      <p className="text-muted-foreground text-xs">
+                        Selecione ao menos um líder para definir o principal.
+                      </p>
+                    ) : (
+                      <div className="space-y-2">
+                        {selectedLeaders.map((leader) => {
+                          const isPrimary = field.value === leader.id
+                          return (
+                            <button
+                              key={leader.id}
+                              type="button"
+                              onClick={() =>
+                                field.onChange(
+                                  isPrimary ? undefined : leader.id,
+                                )
+                              }
+                              className={cn(
+                                'flex w-full items-center gap-2 rounded-md border px-3 py-2 text-left text-sm transition-colors',
+                                isPrimary
+                                  ? 'border-amber-400 bg-amber-50'
+                                  : 'border-input hover:bg-accent/50',
+                              )}
+                            >
+                              <Avatar className="h-6 w-6">
+                                <AvatarImage src={leader.avatar_url} />
+                                <AvatarFallback
+                                  className="text-[10px]"
+                                  style={getAvatarFallbackStyle(
+                                    leader.avatar_color,
+                                  )}
+                                >
+                                  {getInitials(leader.name)}
+                                </AvatarFallback>
+                              </Avatar>
+                              <span className="flex-1">{leader.name}</span>
+                              <Star
+                                className={cn(
+                                  'h-4 w-4',
+                                  isPrimary
+                                    ? 'fill-amber-500 text-amber-500'
+                                    : 'text-muted-foreground',
+                                )}
+                              />
+                            </button>
+                          )
+                        })}
+                        {selectedPrimaryLeaderId &&
+                          !selectedLeaders.some(
+                            (leader) => leader.id === selectedPrimaryLeaderId,
+                          ) && (
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              className="h-7 px-2 text-xs"
+                              onClick={() => field.onChange(undefined)}
+                            >
+                              Limpar líder principal
+                            </Button>
+                          )}
+                      </div>
+                    )}
+                  </Field>
+                )
+              }}
             />
 
             {/* Volunteers (multi-select) */}
@@ -358,6 +455,24 @@ export function CreateMinistryModal({
                 </Field>
               )}
             />
+
+            {/* Volunteer slots */}
+            <Field data-invalid={!!errors.max_members}>
+              <FieldLabel htmlFor="min-max-members">
+                Quantidade de vagas de voluntários *
+              </FieldLabel>
+              <Input
+                id="min-max-members"
+                type="number"
+                min={1}
+                step={1}
+                aria-invalid={!!errors.max_members}
+                {...register('max_members', { valueAsNumber: true })}
+              />
+              <FieldError
+                errors={errors.max_members ? [errors.max_members] : []}
+              />
+            </Field>
 
             {/* Icon */}
             <Controller

@@ -2,6 +2,7 @@
 
 import {
   CalendarDays,
+  CalendarPlus,
   ChevronLeft,
   ChevronRight,
   Church,
@@ -38,6 +39,7 @@ const navItems: NavItem[] = [
   { href: '/events', label: 'Eventos', icon: CalendarDays },
   { href: '/schedules', label: 'Escalas', icon: ClipboardList },
   { href: '/cells', label: 'Células', icon: Network },
+  { href: '/cell-meetings', label: 'Reuniões de Células', icon: CalendarPlus },
   { href: '/finance', label: 'Financeiro', icon: DollarSign, disabled: true },
   { href: '/settings', label: 'Configurações', icon: Settings },
 ]

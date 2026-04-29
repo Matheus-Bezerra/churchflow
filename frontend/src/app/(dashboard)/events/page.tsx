@@ -13,6 +13,7 @@ import { useMemo, useState } from 'react'
 import { StatsCard } from '@/components/features/dashboard/StatsCard'
 import { CreateEventModal } from '@/components/features/events/CreateEventModal'
 import { EventCard } from '@/components/features/events/EventCard'
+import { GenerateScheduleModal } from '@/components/features/schedules/GenerateScheduleModal'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -30,6 +31,8 @@ export default function EventsPage() {
   const [search, setSearch] = useState('')
   const [typeFilter, setTypeFilter] = useState<string>('all')
   const [createOpen, setCreateOpen] = useState(false)
+  const [generateOpen, setGenerateOpen] = useState(false)
+  const [selectedEventId, setSelectedEventId] = useState<string | null>(null)
 
   const { data: events = [], isLoading } = useEvents({
     search,
@@ -61,6 +64,11 @@ export default function EventsPage() {
   function handleDelete(id: string) {
     // Local removal — no backend yet
     console.info('delete event', id)
+  }
+
+  function handleGenerateSchedule(eventId: string) {
+    setSelectedEventId(eventId)
+    setGenerateOpen(true)
   }
 
   return (
@@ -166,12 +174,23 @@ export default function EventsPage() {
       ) : (
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {events.map((event) => (
-            <EventCard key={event.id} event={event} onDelete={handleDelete} />
+            <EventCard
+              key={event.id}
+              event={event}
+              onDelete={handleDelete}
+              onGenerateSchedule={handleGenerateSchedule}
+            />
           ))}
         </div>
       )}
 
       <CreateEventModal open={createOpen} onOpenChange={setCreateOpen} />
+
+      <GenerateScheduleModal
+        open={generateOpen}
+        onOpenChange={setGenerateOpen}
+        preselectedEventId={selectedEventId}
+      />
     </div>
   )
 }

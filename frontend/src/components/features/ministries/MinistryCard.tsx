@@ -2,9 +2,9 @@
 
 import {
   Calendar,
-  Clock,
   MoreHorizontal,
   Pencil,
+  Star,
   Trash2,
   UserPlus,
   Users,
@@ -66,10 +66,6 @@ export function MinistryCard({ ministry, onDelete }: MinistryCardProps) {
               <h3 className="font-semibold text-gray-900 text-sm">
                 {ministry.name}
               </h3>
-              <div className="mt-0.5 flex items-center gap-1 text-gray-500 text-xs">
-                <Clock className="h-3 w-3" />
-                {ministry.meeting_day} às {ministry.meeting_time}
-              </div>
             </div>
           </div>
           <DropdownMenu>
@@ -127,9 +123,20 @@ export function MinistryCard({ ministry, onDelete }: MinistryCardProps) {
                     </AvatarFallback>
                   </Avatar>
                   <span className="text-gray-600 text-xs">{leader.name}</span>
-                  <Badge variant="secondary" className="ml-auto text-[10px]">
-                    Líder
-                  </Badge>
+                  <div className="ml-auto flex items-center gap-1">
+                    {ministry.primary_leader_id === leader.id && (
+                      <Badge
+                        variant="secondary"
+                        className="border-amber-200 bg-amber-50 text-[10px] text-amber-700"
+                      >
+                        <Star className="mr-1 h-3 w-3 fill-amber-500 text-amber-500" />
+                        Principal
+                      </Badge>
+                    )}
+                    <Badge variant="secondary" className="text-[10px]">
+                      Líder
+                    </Badge>
+                  </div>
                 </div>
               ) : null,
             )}

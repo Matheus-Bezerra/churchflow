@@ -1,8 +1,11 @@
 export type ScheduleStatus = 'pending' | 'confirmed' | 'declined'
+export type VolunteerConfirmationStatus = 'pending' | 'confirmed' | 'declined'
 
 export interface ScheduleVolunteer {
   user_id: string
   role: string
+  confirmation_status: VolunteerConfirmationStatus
+  decline_reason?: string | null
 }
 
 export interface Schedule {
@@ -15,6 +18,8 @@ export interface Schedule {
   volunteers: ScheduleVolunteer[]
   status: ScheduleStatus
   decline_reason?: string | null
+  description?: string | null
+  material_links?: string[]
   notes?: string | null
   created_at: string
   updated_at: string

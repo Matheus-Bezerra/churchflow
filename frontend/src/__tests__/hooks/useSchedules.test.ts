@@ -18,7 +18,14 @@ describe('checkConflict', () => {
     ministry_id: 'ministry-1',
     event_occurrence_date: '2026-05-04',
     name: 'Test Schedule',
-    volunteers: [{ user_id: 'user-2', role: 'Vocal' }],
+    volunteers: [
+      {
+        user_id: 'user-2',
+        role: 'Vocal',
+        confirmation_status: 'pending',
+        decline_reason: null,
+      },
+    ],
     status: 'pending',
     decline_reason: null,
     notes: null,

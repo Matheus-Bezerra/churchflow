@@ -6,7 +6,21 @@ import {
   mockSchedules,
   mockUnavailabilities,
 } from '@/lib/mocks'
-import type { ScheduleWithMeta } from '@/types/schedule'
+import type { ScheduleVolunteer, ScheduleWithMeta } from '@/types/schedule'
+
+function getScheduleStatus(volunteers: ScheduleVolunteer[]) {
+  const hasDeclined = volunteers.some(
+    (volunteer) => volunteer.confirmation_status === 'declined',
+  )
+  if (hasDeclined) return 'declined' as const
+
+  const allConfirmed =
+    volunteers.length > 0 &&
+    volunteers.every((volunteer) => volunteer.confirmation_status === 'confirmed')
+  if (allConfirmed) return 'confirmed' as const
+
+  return 'pending' as const
+}
 
 async function fetchSchedules(): Promise<ScheduleWithMeta[]> {
   await new Promise((r) => setTimeout(r, 350))
@@ -29,6 +43,7 @@ async function fetchSchedules(): Promise<ScheduleWithMeta[]> {
 
       return {
         ...schedule,
+        status: getScheduleStatus(schedule.volunteers),
         event_name: event?.name ?? 'Evento desconhecido',
         event_color: event?.color ?? '#6B7280',
         event_icon: event?.icon ?? 'Calendar',

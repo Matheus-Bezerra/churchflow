@@ -3,6 +3,8 @@ import { z } from 'zod'
 export const scheduleVolunteerSchema = z.object({
   user_id: z.string().min(1, 'Selecione um voluntário'),
   role: z.string().min(1, 'Informe o cargo'),
+  confirmation_status: z.enum(['pending', 'confirmed', 'declined']),
+  decline_reason: z.string().nullable().optional(),
 })
 
 export const scheduleSchema = z.object({

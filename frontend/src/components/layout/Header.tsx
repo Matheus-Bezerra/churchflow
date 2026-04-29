@@ -23,6 +23,7 @@ const pageTitles: Record<string, string> = {
   '/ministries': 'Ministérios',
   '/schedules': 'Escalas',
   '/cells': 'Células',
+  '/cell-meetings': 'Reuniões de Células',
   '/finance': 'Financeiro',
   '/settings': 'Configurações',
 }

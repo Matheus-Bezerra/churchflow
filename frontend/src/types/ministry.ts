@@ -9,9 +9,8 @@ export interface Ministry {
   color: string
   leader_id: string
   leader_ids?: string[]
+  primary_leader_id?: string
   volunteer_ids?: string[]
-  meeting_day: string
-  meeting_time: string
   status: MinistryStatus
   member_count: number
   max_members?: number

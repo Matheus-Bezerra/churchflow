@@ -29,9 +29,14 @@ import type { ChurchEvent } from '@/types/event'
 interface EventCardProps {
   event: ChurchEvent
   onDelete: (id: string) => void
+  onGenerateSchedule: (eventId: string) => void
 }
 
-export function EventCard({ event, onDelete }: EventCardProps) {
+export function EventCard({
+  event,
+  onDelete,
+  onGenerateSchedule,
+}: EventCardProps) {
   const [menuOpen, setMenuOpen] = useState(false)
 
   const Icon = EVENT_ICONS[event.icon] ?? EVENT_ICONS.Calendar
@@ -84,6 +89,10 @@ export function EventCard({ event, onDelete }: EventCardProps) {
                 <Pencil className="mr-2 h-4 w-4" />
                 Editar
               </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onGenerateSchedule(event.id)}>
+                <Calendar className="mr-2 h-4 w-4" />
+                Gerar Escala
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="text-red-600"
@@ -113,7 +122,6 @@ export function EventCard({ event, onDelete }: EventCardProps) {
           </div>
         )}
 
-        {/* Date / Schedule */}
         <div className="mb-3 space-y-1">
           {event.recurring ? (
             recurrenceDays.map((day) => {

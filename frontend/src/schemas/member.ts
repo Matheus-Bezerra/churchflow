@@ -80,4 +80,3 @@ export const memberUnavailabilitySchema = z.discriminatedUnion('type', [
   unavailabilityPeriodSchema,
   unavailabilityRecurringSchema,
 ])
-

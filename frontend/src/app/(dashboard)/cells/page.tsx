@@ -1,6 +1,6 @@
 'use client'
 
-import { Calendar, Network, Plus, UserCheck, Users } from 'lucide-react'
+import { Activity, Network, Plus, TrendingUp, Users } from 'lucide-react'
 import { useState } from 'react'
 
 import { CellCard } from '@/components/features/cells/CellCard'
@@ -58,17 +58,18 @@ export default function CellsPage() {
           iconBg="bg-emerald-50"
         />
         <StatsCard
-          title="Líderes"
-          value={stats?.leaders ?? 0}
-          icon={UserCheck}
-          iconColor="text-orange-500"
-          iconBg="bg-orange-50"
+          title="Frequência média"
+          value={`${stats?.avg_attendance_pct ?? 0}%`}
+          description="Presença média no mês"
+          icon={TrendingUp}
+          iconColor="text-emerald-600"
+          iconBg="bg-emerald-50"
         />
         <StatsCard
-          title="Reuniões este mês"
-          value={stats?.meetings_this_month ?? 0}
-          description="Estimativa mensal"
-          icon={Calendar}
+          title="Células ativas no mês"
+          value={`${stats?.active_cells ?? 0} / ${stats?.total_cells ?? 0}`}
+          description="Com ao menos 1 reunião"
+          icon={Activity}
           iconColor="text-purple-500"
           iconBg="bg-purple-50"
         />
