@@ -82,7 +82,7 @@ export function AvatarPicker({
             <button
               type="button"
               onClick={() => onChange(undefined)}
-              className="absolute -top-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 shadow-sm transition-colors hover:bg-gray-50 hover:text-red-500"
+              className="absolute -top-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full border bg-background text-muted-foreground shadow-sm transition-colors hover:bg-muted hover:text-red-500"
               aria-label="Remover avatar"
               title="Remover"
             >
@@ -92,8 +92,8 @@ export function AvatarPicker({
         </div>
 
         <div className="min-w-0 flex-1">
-          <p className="font-medium text-gray-900 text-sm">Foto do membro</p>
-          <p className="text-gray-500 text-xs">
+          <p className="font-medium text-foreground text-sm">Foto do membro</p>
+          <p className="text-muted-foreground text-xs">
             Clique no avatar para {value ? 'alterar' : 'selecionar'}.
           </p>
           <div className="mt-2 flex gap-2">
@@ -108,11 +108,11 @@ export function AvatarPicker({
               Selecionar
             </Button>
             {value && (
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="text-gray-500 hover:text-red-600"
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="text-muted-foreground hover:text-red-600"
                 onClick={() => onChange(undefined)}
               >
                 Remover
@@ -124,7 +124,7 @@ export function AvatarPicker({
 
       {onAvatarColorChange && (
         <div>
-          <p className="mb-2 font-medium text-gray-900 text-sm">Cor do avatar</p>
+          <p className="mb-2 font-medium text-foreground text-sm">Cor do avatar</p>
           <div className="flex flex-wrap items-center gap-2">
             {PRESET_COLORS.map((color) => (
               <button
@@ -135,7 +135,7 @@ export function AvatarPicker({
                 className={cn(
                   'h-7 w-7 rounded-full border-2 transition-transform hover:scale-110',
                   avatarColor === color.value
-                    ? 'scale-110 border-gray-900'
+                    ? 'scale-110 border-foreground'
                     : 'border-transparent',
                 )}
                 style={{ backgroundColor: color.value }}
@@ -147,7 +147,7 @@ export function AvatarPicker({
 
       {/* Panel (collapsible) */}
       {open && (
-        <div className="rounded-xl border border-gray-200 bg-white p-3">
+        <div className="rounded-xl border bg-background p-3">
           <div className="flex w-full flex-col items-center gap-2">
             <input
               ref={inputRef}
@@ -166,7 +166,7 @@ export function AvatarPicker({
               <Upload className="mr-2 h-4 w-4" />
               Escolher arquivo
             </Button>
-            <p className="text-gray-400 text-xs">JPG, PNG ou WebP • máx. 2 MB</p>
+            <p className="text-muted-foreground text-xs">JPG, PNG ou WebP • máx. 2 MB</p>
             {fileError && <p className="text-red-500 text-xs">{fileError}</p>}
           </div>
         </div>

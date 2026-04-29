@@ -64,10 +64,10 @@ export function MemberProfileModal({
               </AvatarFallback>
             </Avatar>
             <div>
-              <h3 className="font-semibold text-gray-900 text-lg">
+              <h3 className="font-semibold text-foreground text-lg">
                 {member.name}
               </h3>
-              <p className="text-gray-500 text-sm">{roleLabel}</p>
+              <p className="text-muted-foreground text-sm">{roleLabel}</p>
               <div className="mt-1 flex items-center gap-2">
                 <Badge className={statusCfg.className}>{statusCfg.label}</Badge>
                 {member.baptized && (
@@ -83,23 +83,23 @@ export function MemberProfileModal({
 
           {/* Contact */}
           <div className="space-y-2">
-            <h4 className="font-semibold text-gray-400 text-xs uppercase tracking-wide">
+            <h4 className="font-semibold text-muted-foreground text-xs uppercase tracking-wide">
               Contato
             </h4>
             <div className="space-y-2">
-              <div className="flex items-center gap-2 text-gray-700 text-sm">
-                <Mail className="h-4 w-4 text-gray-400" />
+              <div className="flex items-center gap-2 text-foreground text-sm">
+                <Mail className="h-4 w-4 text-muted-foreground" />
                 {member.email}
               </div>
               {member.phone && (
-                <div className="flex items-center gap-2 text-gray-700 text-sm">
-                  <Phone className="h-4 w-4 text-gray-400" />
+                <div className="flex items-center gap-2 text-foreground text-sm">
+                  <Phone className="h-4 w-4 text-muted-foreground" />
                   {member.phone}
                 </div>
               )}
               {member.address && (
-                <div className="flex items-center gap-2 text-gray-700 text-sm">
-                  <MapPin className="h-4 w-4 text-gray-400" />
+                <div className="flex items-center gap-2 text-foreground text-sm">
+                  <MapPin className="h-4 w-4 text-muted-foreground" />
                   {member.address}, {member.city} — {member.state}
                 </div>
               )}
@@ -112,21 +112,21 @@ export function MemberProfileModal({
           <div className="grid grid-cols-2 gap-4">
             {member.birth_date && (
               <div>
-                <p className="mb-1 font-semibold text-gray-400 text-xs uppercase tracking-wide">
+                <p className="mb-1 font-semibold text-muted-foreground text-xs uppercase tracking-wide">
                   Nascimento
                 </p>
-                <p className="flex items-center gap-1 text-gray-700 text-sm">
-                  <Calendar className="h-3.5 w-3.5 text-gray-400" />
+                <p className="flex items-center gap-1 text-foreground text-sm">
+                  <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
                   {formatDate(member.birth_date)}
                 </p>
               </div>
             )}
             {member.baptism_date && (
               <div>
-                <p className="mb-1 font-semibold text-gray-400 text-xs uppercase tracking-wide">
+                <p className="mb-1 font-semibold text-muted-foreground text-xs uppercase tracking-wide">
                   Batismo
                 </p>
-                <p className="flex items-center gap-1 text-gray-700 text-sm">
+                <p className="flex items-center gap-1 text-foreground text-sm">
                   <Droplets className="h-3.5 w-3.5 text-sky-400" />
                   {formatDate(member.baptism_date)}
                 </p>
@@ -134,20 +134,20 @@ export function MemberProfileModal({
             )}
             {cell && (
               <div>
-                <p className="mb-1 font-semibold text-gray-400 text-xs uppercase tracking-wide">
+                <p className="mb-1 font-semibold text-muted-foreground text-xs uppercase tracking-wide">
                   Célula
                 </p>
-                <p className="flex items-center gap-1 text-gray-700 text-sm">
-                  <Network className="h-3.5 w-3.5 text-gray-400" />
+                <p className="flex items-center gap-1 text-foreground text-sm">
+                  <Network className="h-3.5 w-3.5 text-muted-foreground" />
                   {cell.name}
                 </p>
               </div>
             )}
             <div>
-              <p className="mb-1 font-semibold text-gray-400 text-xs uppercase tracking-wide">
+              <p className="mb-1 font-semibold text-muted-foreground text-xs uppercase tracking-wide">
                 Membro desde
               </p>
-              <p className="text-gray-700 text-sm">
+              <p className="text-foreground text-sm">
                 {formatDate(member.joined_at)}
               </p>
             </div>
@@ -157,7 +157,7 @@ export function MemberProfileModal({
             <>
               <Separator />
               <div>
-                <p className="mb-2 font-semibold text-gray-400 text-xs uppercase tracking-wide">
+                <p className="mb-2 font-semibold text-muted-foreground text-xs uppercase tracking-wide">
                   Ministérios
                 </p>
                 <div className="flex flex-wrap gap-2">

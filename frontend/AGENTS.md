@@ -171,6 +171,33 @@ import { useMembers } from '@/hooks/queries/useMembers'
 
 **Biome is the primary tool** (single quotes, trailing commas, 80-col lines, organized imports). Run `pnpm lint` before committing. ESLint (`next`) is also present but Biome takes precedence.
 
+### Dark Mode Consistency
+
+- Prefer semantic design tokens (`text-foreground`, `text-muted-foreground`,
+  `bg-background`, `bg-muted`, `border`, `ring-border`) instead of fixed
+  palette classes.
+- Do not introduce `text-gray-*`, `bg-white`, `border-gray-*` in feature code.
+- When branding colors are intentional (e.g. blue/emerald badges), add proper
+  `dark:` variants to preserve contrast and readability.
+- Any new feature or adjustment must be validated in both light and dark modes.
+
+### Responsiveness Baseline
+
+- Build mobile-first layouts by default.
+- For metric grids, start at `grid-cols-1` and scale up with breakpoints
+  (`sm:grid-cols-2`, `lg:grid-cols-4` when needed).
+- For dense data views (especially tables), provide a mobile strategy:
+  hide lower-priority columns and/or render a card list variant below `md`.
+- New pages and updates must be checked in common breakpoints (`<640`, `768`,
+  `1024+`).
+
+### Comments and Documentation
+
+- Avoid non-essential inline comments in components and page files.
+- Use comments only when explaining non-obvious decisions or constraints.
+- Prefer JSDoc for reusable utility functions in `src/lib/` and shared
+  formatter/helper modules.
+
 ---
 
 ## Types

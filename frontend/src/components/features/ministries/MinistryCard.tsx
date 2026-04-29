@@ -9,6 +9,7 @@ import {
   UserPlus,
   Users,
 } from 'lucide-react'
+import Link from 'next/link'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
@@ -51,8 +52,9 @@ export function MinistryCard({ ministry, onDelete }: MinistryCardProps) {
     : 100
 
   return (
-    <Card className="border border-gray-200 shadow-sm transition-shadow hover:shadow-md">
-      <CardContent className="p-5">
+    <Link href={`/ministries/${ministry.id}`} className="block">
+      <Card className="border shadow-sm transition-shadow hover:shadow-md">
+        <CardContent className="p-5">
         {/* Header */}
         <div className="mb-4 flex items-start justify-between">
           <div className="flex items-center gap-3">
@@ -63,13 +65,16 @@ export function MinistryCard({ ministry, onDelete }: MinistryCardProps) {
               <Icon className="h-5 w-5" style={{ color: ministry.color }} />
             </div>
             <div>
-              <h3 className="font-semibold text-gray-900 text-sm">
+              <h3 className="font-semibold text-foreground text-sm">
                 {ministry.name}
               </h3>
             </div>
           </div>
           <DropdownMenu>
-            <DropdownMenuTrigger className="flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent focus-visible:outline-none">
+            <DropdownMenuTrigger
+              onClick={(event) => event.preventDefault()}
+              className="flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent focus-visible:outline-none"
+            >
               <MoreHorizontal className="h-4 w-4" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -99,7 +104,7 @@ export function MinistryCard({ ministry, onDelete }: MinistryCardProps) {
 
         {/* Description */}
         {ministry.description && (
-          <p className="mb-4 line-clamp-2 text-gray-500 text-xs leading-relaxed">
+          <p className="mb-4 line-clamp-2 text-muted-foreground text-xs leading-relaxed">
             {ministry.description}
           </p>
         )}
@@ -107,7 +112,7 @@ export function MinistryCard({ ministry, onDelete }: MinistryCardProps) {
         {/* Leaders */}
         {leaders.length > 0 && (
           <div className="mb-3 space-y-1.5">
-            <p className="font-medium text-[11px] text-gray-400 uppercase tracking-wide">
+            <p className="font-medium text-[11px] text-muted-foreground uppercase tracking-wide">
               {leaders.length === 1 ? 'Líder' : 'Líderes'}
             </p>
             {leaders.map((leader) =>
@@ -122,7 +127,7 @@ export function MinistryCard({ ministry, onDelete }: MinistryCardProps) {
                       {getInitials(leader.name)}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="text-gray-600 text-xs">{leader.name}</span>
+                  <span className="text-muted-foreground text-xs">{leader.name}</span>
                   <div className="ml-auto flex items-center gap-1">
                     {ministry.primary_leader_id === leader.id && (
                       <Badge
@@ -146,7 +151,7 @@ export function MinistryCard({ ministry, onDelete }: MinistryCardProps) {
         {/* Volunteers */}
         {volunteers.length > 0 && (
           <div className="mb-3 space-y-1.5">
-            <p className="font-medium text-[11px] text-gray-400 uppercase tracking-wide">
+            <p className="font-medium text-[11px] text-muted-foreground uppercase tracking-wide">
               Voluntários ({volunteers.length})
             </p>
             <div className="flex flex-wrap gap-1">
@@ -164,7 +169,7 @@ export function MinistryCard({ ministry, onDelete }: MinistryCardProps) {
                 ) : null,
               )}
               {volunteers.length > 5 && (
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 text-[9px] text-gray-500">
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-muted text-[9px] text-muted-foreground">
                   +{volunteers.length - 5}
                 </div>
               )}
@@ -174,8 +179,8 @@ export function MinistryCard({ ministry, onDelete }: MinistryCardProps) {
 
         {/* Members progress */}
         {ministry.max_members ? (
-          <div className="space-y-1.5 border-gray-100 border-t pt-3">
-            <div className="flex items-center justify-between text-gray-500 text-xs">
+          <div className="space-y-1.5 border-t pt-3">
+            <div className="flex items-center justify-between text-muted-foreground text-xs">
               <span className="flex items-center gap-1">
                 <Users className="h-3 w-3" />
                 {ministry.member_count} membros
@@ -185,12 +190,13 @@ export function MinistryCard({ ministry, onDelete }: MinistryCardProps) {
             <Progress value={fillPercent} className="h-1.5" />
           </div>
         ) : (
-          <div className="flex items-center gap-1 border-gray-100 border-t pt-3 text-gray-500 text-xs">
+          <div className="flex items-center gap-1 border-t pt-3 text-muted-foreground text-xs">
             <Users className="h-3 w-3" />
             {ministry.member_count} membros
           </div>
         )}
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </Link>
   )
 }

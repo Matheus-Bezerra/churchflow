@@ -1325,13 +1325,12 @@ export function getMinistryById(id: string) {
 export function getBirthdaysThisMonth(): User[] {
   const now = new Date()
   const month = now.getMonth() + 1
-  const today = now.getDate()
 
   return mockUsers
     .filter((u) => !u.deleted_at && u.birth_date)
     .filter((u) => {
-      const [, birthMonth, birthDay] = u.birth_date!.split('-')
-      return Number(birthMonth) === month && Number(birthDay) >= today
+      const [, birthMonth] = u.birth_date!.split('-')
+      return Number(birthMonth) === month
     })
     .sort((a, b) => {
       const dayA = Number(a.birth_date!.split('-')[2])

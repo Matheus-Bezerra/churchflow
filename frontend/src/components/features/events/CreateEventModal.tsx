@@ -85,11 +85,11 @@ export function CreateEventModal({
     <>
       <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent className="flex max-h-[90dvh] max-w-2xl flex-col gap-0 overflow-hidden p-0 sm:max-w-3xl">
-          <DialogHeader className="shrink-0 border-gray-100 border-b px-6 pt-6 pb-4">
-            <DialogTitle className="font-bold text-gray-900 text-xl">
+          <DialogHeader className="shrink-0 border-b px-6 pt-6 pb-4">
+            <DialogTitle className="font-bold text-foreground text-xl">
               Novo Evento
             </DialogTitle>
-            <DialogDescription className="text-gray-500 text-sm">
+            <DialogDescription className="text-muted-foreground text-sm">
               Preencha os dados do novo evento
             </DialogDescription>
           </DialogHeader>

@@ -1,8 +1,9 @@
 /**
  * @jest-environment jsdom
  */
-import React from 'react'
-import { render, screen, fireEvent } from '@testing-library/react'
+
+import { fireEvent, render, screen } from '@testing-library/react'
+import type React from 'react'
 import '@testing-library/jest-dom'
 
 // Mock Next.js navigation
@@ -45,8 +46,13 @@ jest.mock('@/store/useSidebarStore', () => ({
 // Mock shadcn tooltip — suppress TooltipContent to avoid false positives in collapsed mode
 jest.mock('@/components/ui/tooltip', () => ({
   Tooltip: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-  TooltipTrigger: ({ children, asChild }: { children: React.ReactNode; asChild?: boolean }) =>
-    asChild ? <>{children}</> : <div>{children}</div>,
+  TooltipTrigger: ({
+    children,
+    asChild,
+  }: {
+    children: React.ReactNode
+    asChild?: boolean
+  }) => (asChild ? children : <div>{children}</div>),
   TooltipContent: () => null,
 }))
 
@@ -59,14 +65,15 @@ describe('Sidebar', () => {
     mockPathname.mockReturnValue('/dashboard')
   })
 
-  it('renders the ChurchFlow logo text when sidebar is open', () => {
+  it('renders church branding text when sidebar is open', () => {
     render(<Sidebar />)
-    expect(screen.getByText('ChurchFlow')).toBeInTheDocument()
+    expect(screen.getByText('AD Tatuapé')).toBeInTheDocument()
+    expect(screen.getByText('Lugar de Esperança')).toBeInTheDocument()
   })
 
   it('renders all navigation links', () => {
     render(<Sidebar />)
-    expect(screen.getByText('Dashboard')).toBeInTheDocument()
+    expect(screen.getByText('Visão Geral')).toBeInTheDocument()
     expect(screen.getByText('Membros')).toBeInTheDocument()
     expect(screen.getByText('Ministérios')).toBeInTheDocument()
     expect(screen.getByText('Escalas')).toBeInTheDocument()
@@ -85,29 +92,31 @@ describe('Sidebar', () => {
   it('hides label text when sidebar is collapsed', () => {
     mockIsOpen = false
     render(<Sidebar />)
-    expect(screen.queryByText('ChurchFlow')).not.toBeInTheDocument()
-    expect(screen.queryByText('Dashboard')).not.toBeInTheDocument()
+    expect(screen.queryByText('AD Tatuapé')).not.toBeInTheDocument()
+    expect(screen.queryByText('Visão Geral')).not.toBeInTheDocument()
   })
 
   it('shows expand button label when collapsed', () => {
     mockIsOpen = false
     render(<Sidebar />)
-    expect(screen.getByRole('button', { name: /Expandir sidebar/i })).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: /Expandir sidebar/i }),
+    ).toBeInTheDocument()
   })
 
   it('highlights the active route link', () => {
     mockPathname.mockReturnValue('/dashboard')
     render(<Sidebar />)
-    const dashboardLink = screen.getByRole('link', { name: /Dashboard/i })
-    expect(dashboardLink).toHaveClass('bg-blue-50')
-    expect(dashboardLink).toHaveClass('text-blue-700')
+    const dashboardLink = screen.getByRole('link', { name: /Visão Geral/i })
+    expect(dashboardLink).toHaveClass('bg-primary/15')
+    expect(dashboardLink).toHaveClass('text-primary')
   })
 
   it('does not highlight inactive route links', () => {
     mockPathname.mockReturnValue('/dashboard')
     render(<Sidebar />)
     const membersLink = screen.getByRole('link', { name: /Membros/i })
-    expect(membersLink).not.toHaveClass('bg-blue-50')
+    expect(membersLink).not.toHaveClass('bg-primary/15')
   })
 
   it('renders sidebar with data-testid for accessibility', () => {

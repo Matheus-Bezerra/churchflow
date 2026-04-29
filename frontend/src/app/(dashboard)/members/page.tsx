@@ -58,8 +58,8 @@ export default function MembersPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="font-bold text-2xl text-gray-900">Membros</h2>
-          <p className="mt-1 text-gray-500 text-sm">
+          <h2 className="font-bold text-2xl text-foreground">Membros</h2>
+          <p className="mt-1 text-muted-foreground text-sm">
             Gerencie os membros da sua igreja
           </p>
         </div>
@@ -73,7 +73,7 @@ export default function MembersPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatsCard
           title="Total"
           value={stats?.total_members ?? 0}
@@ -117,12 +117,12 @@ export default function MembersPage() {
       {/* Filters */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="relative flex-1">
-          <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Buscar por nome, e-mail ou telefone..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="bg-white pl-9"
+            className="bg-background pl-9"
           />
         </div>
         <Select
@@ -132,7 +132,7 @@ export default function MembersPage() {
             MEMBER_LIST_STATUS_LABELS[String(v)] ?? String(v)
           }
         >
-          <SelectTrigger className="w-full bg-white sm:w-44">
+          <SelectTrigger className="w-full bg-background sm:w-44">
             <SelectValue placeholder="Filtrar por status" />
           </SelectTrigger>
           <SelectContent>
@@ -162,7 +162,7 @@ export default function MembersPage() {
           onValueChange={setMinistryId}
           itemToStringLabel={(v) => ministryFilterLabel(String(v))}
         >
-          <SelectTrigger className="w-full bg-white sm:w-48">
+          <SelectTrigger className="w-full bg-background sm:w-48">
             <SelectValue placeholder="Filtrar por ministério" />
           </SelectTrigger>
           <SelectContent>

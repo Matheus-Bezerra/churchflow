@@ -69,9 +69,9 @@ export function MemberMinistryPicker({
                   <span
                     className={cn(
                       'flex h-4 w-4 shrink-0 items-center justify-center rounded border',
-                      checked
-                        ? 'border-blue-600 bg-blue-600 text-white'
-                        : 'border-gray-300',
+                        checked
+                          ? 'border-blue-600 bg-blue-600 text-white'
+                          : 'border-input',
                     )}
                   >
                     {checked && <Check className="h-3 w-3" />}

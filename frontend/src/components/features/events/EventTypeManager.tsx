@@ -69,7 +69,7 @@ export function EventTypeManager({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-sm sm:max-w-3xl">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 font-semibold text-gray-900">
+          <DialogTitle className="flex items-center gap-2 font-semibold text-foreground">
             <Settings2 className="h-4 w-4" />
             Gerenciar tipos de evento
           </DialogTitle>
@@ -77,7 +77,7 @@ export function EventTypeManager({
 
         <div className="space-y-3">
           {/* List */}
-          <ul className="divide-y divide-gray-100 rounded-lg border border-gray-200">
+          <ul className="divide-y divide-border rounded-lg border">
             {types.map((type) => (
               <li
                 key={type.id}
@@ -105,33 +105,33 @@ export function EventTypeManager({
                     <button
                       type="button"
                       onClick={cancelEdit}
-                      className="text-gray-400 hover:text-gray-600"
+                      className="text-muted-foreground hover:text-foreground"
                     >
                       <X className="h-3.5 w-3.5" />
                     </button>
                   </>
                 ) : (
                   <>
-                    <span className="flex-1 text-gray-800 text-sm">
+                    <span className="flex-1 text-foreground text-sm">
                       {type.label}
                     </span>
                     <div className="flex items-center gap-1">
                       {type.is_default && (
-                        <Badge className="bg-gray-100 text-[10px] text-gray-500">
+                        <Badge className="bg-muted text-[10px] text-muted-foreground">
                           Padrão
                         </Badge>
                       )}
                       <button
                         type="button"
                         onClick={() => startEdit(type)}
-                        className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                        className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
                       >
                         <Pencil className="h-3.5 w-3.5" />
                       </button>
                       <button
                         type="button"
                         onClick={() => onDelete(type.id)}
-                        className="rounded p-1 text-gray-400 hover:bg-red-50 hover:text-red-500"
+                        className="rounded p-1 text-muted-foreground hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-950/30"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </button>
@@ -173,7 +173,7 @@ export function EventTypeManager({
             <p
               className={cn(
                 'text-right text-xs',
-                types.length >= MAX_EVENT_TYPES ? 'text-red-500' : 'text-gray-400',
+                types.length >= MAX_EVENT_TYPES ? 'text-red-500' : 'text-muted-foreground',
               )}
             >
               {types.length}/{MAX_EVENT_TYPES} tipos

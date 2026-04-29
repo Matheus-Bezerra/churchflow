@@ -1,9 +1,9 @@
 'use client'
 
 import { Plus } from 'lucide-react'
-import Link from 'next/link'
 import { useState } from 'react'
 
+import { MeetingsList } from '@/components/features/cells/MeetingsList'
 import { RegisterMeetingModal } from '@/components/features/cells/RegisterMeetingModal'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -38,10 +38,10 @@ export default function CellMeetingsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="font-bold text-2xl text-gray-900">
+          <h2 className="font-bold text-2xl text-foreground">
             Reunioes de Celulas
           </h2>
-          <p className="mt-1 text-gray-500 text-sm">
+          <p className="mt-1 text-muted-foreground text-sm">
             Registre presenca e acompanhe atividade por data
           </p>
         </div>
@@ -79,51 +79,16 @@ export default function CellMeetingsPage() {
             </Select>
           </div>
 
-          <div className="space-y-3">
-            {meetings.map(
-              ({ meeting, cell, presentCount, absentCount, attendancePct }) => (
-                <div
-                  key={meeting.id}
-                  className="grid gap-2 rounded-lg border border-gray-200 px-4 py-3 text-sm sm:grid-cols-6"
-                >
-                  <p className="font-medium">
-                    {new Date(`${meeting.date}T00:00:00`).toLocaleDateString(
-                      'pt-BR',
-                    )}
-                  </p>
-                  <p>{cell?.name ?? 'Celula removida'}</p>
-                  <p>{presentCount} presentes</p>
-                  <p>{absentCount} ausentes</p>
-                  <p className="font-medium text-emerald-700">
-                    {attendancePct}%
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <Link
-                      href={`/cells/${meeting.cell_id}`}
-                      className="text-blue-600 text-xs hover:text-blue-700"
-                    >
-                      Ver
-                    </Link>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setRegisterCellId(meeting.cell_id)
-                        setRegisterOpen(true)
-                      }}
-                      className="text-gray-500 text-xs hover:text-gray-700"
-                    >
-                      Registrar presenca
-                    </button>
-                  </div>
-                </div>
-              ),
-            )}
-            {meetings.length === 0 && (
-              <div className="rounded-lg border border-gray-200 border-dashed p-5 text-center text-gray-500 text-sm">
-                Nenhuma reuniao encontrada para o filtro selecionado.
-              </div>
-            )}
-          </div>
+          <MeetingsList
+            items={meetings}
+            emptyMessage="Nenhuma reunião encontrada para o filtro selecionado."
+            showCellName
+            showViewLink
+            onRegisterAttendance={(cellId) => {
+              setRegisterCellId(cellId)
+              setRegisterOpen(true)
+            }}
+          />
         </CardContent>
       </Card>
 
@@ -131,7 +96,11 @@ export default function CellMeetingsPage() {
         <RegisterMeetingModal
           open={registerOpen}
           onOpenChange={setRegisterOpen}
+          cell={selectedCell}
           members={members}
+          existingMeetingDates={meetings
+            .filter(({ meeting }) => meeting.cell_id === selectedCell.id)
+            .map(({ meeting }) => meeting.date)}
           onSave={({ date, absentMemberIds }) => {
             registerMeeting({
               cellId: selectedCell.id,

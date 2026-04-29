@@ -76,8 +76,8 @@ export default function EventsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="font-bold text-2xl text-gray-900">Eventos</h2>
-          <p className="mt-1 text-gray-500 text-sm">
+          <h2 className="font-bold text-2xl text-foreground">Eventos</h2>
+          <p className="mt-1 text-muted-foreground text-sm">
             Gerencie os eventos da sua igreja
           </p>
         </div>
@@ -90,8 +90,7 @@ export default function EventsPage() {
         </Button>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatsCard
           title="Total"
           value={stats.total}
@@ -127,12 +126,12 @@ export default function EventsPage() {
       {/* Filters */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="relative flex-1">
-          <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Buscar por nome..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="bg-white pl-9"
+            className="bg-background pl-9"
           />
         </div>
         <Select
@@ -140,7 +139,7 @@ export default function EventsPage() {
           onValueChange={(value) => setTypeFilter(value ?? 'all')}
           itemToStringLabel={typeItemLabel}
         >
-          <SelectTrigger className="w-full bg-white sm:w-52">
+          <SelectTrigger className="w-full bg-background sm:w-52">
             <SelectValue placeholder="Filtrar por tipo" />
           </SelectTrigger>
           <SelectContent>
@@ -154,7 +153,6 @@ export default function EventsPage() {
         </Select>
       </div>
 
-      {/* Grid */}
       {isLoading ? (
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
@@ -162,12 +160,12 @@ export default function EventsPage() {
           ))}
         </div>
       ) : events.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-xl border border-gray-300 border-dashed bg-white py-16 text-center">
-          <CalendarDays className="mb-3 h-10 w-10 text-gray-300" />
-          <p className="font-medium text-gray-400 text-sm">
+        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed py-16 text-center">
+          <CalendarDays className="mb-3 h-10 w-10 text-muted-foreground/40" />
+          <p className="font-medium text-muted-foreground text-sm">
             Nenhum evento encontrado
           </p>
-          <p className="mt-1 text-gray-400 text-xs">
+          <p className="mt-1 text-muted-foreground text-xs">
             Tente ajustar os filtros ou crie um novo evento
           </p>
         </div>

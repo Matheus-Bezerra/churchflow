@@ -35,7 +35,8 @@ export function useRecentActivities() {
 
 export function useBirthdays() {
   return useQuery({
-    queryKey: ['dashboard', 'birthdays'],
+    queryKey: ['dashboard', 'birthdays', 'all-month'],
     queryFn: fetchBirthdays,
+    staleTime: 0,
   })
 }

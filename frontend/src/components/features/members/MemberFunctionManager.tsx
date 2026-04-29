@@ -85,14 +85,14 @@ export function MemberFunctionManager({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg sm:max-w-3xl">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 font-semibold text-gray-900">
+          <DialogTitle className="flex items-center gap-2 font-semibold text-foreground">
             <Settings2 className="h-4 w-4" />
             Gerenciar funções de membro
           </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-3">
-          <ul className="divide-y divide-gray-100 overflow-hidden rounded-lg border border-gray-200">
+          <ul className="divide-y divide-border overflow-hidden rounded-lg border">
             {functions.map((fn) => {
               const isEditing = editingId === fn.id
               return (
@@ -120,7 +120,7 @@ export function MemberFunctionManager({
                       <button
                         type="button"
                         onClick={cancelEdit}
-                        className="text-gray-400 hover:text-gray-600"
+                        className="text-muted-foreground hover:text-foreground"
                         disabled={isBusy}
                       >
                         <X className="h-3.5 w-3.5" />
@@ -128,12 +128,12 @@ export function MemberFunctionManager({
                     </>
                   ) : (
                     <>
-                      <span className="flex-1 text-gray-800 text-sm">
+                      <span className="flex-1 text-foreground text-sm">
                         {fn.label}
                       </span>
                       <div className="flex items-center gap-1">
                         {fn.is_default && (
-                          <Badge className="bg-gray-100 text-[10px] text-gray-500">
+                          <Badge className="bg-muted text-[10px] text-muted-foreground">
                             Padrão
                           </Badge>
                         )}
@@ -142,9 +142,9 @@ export function MemberFunctionManager({
                           onClick={() => startEdit(fn)}
                           disabled={fn.is_default || isBusy}
                           className={cn(
-                            'rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600',
+                            'rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground',
                             (fn.is_default || isBusy) &&
-                              'cursor-not-allowed opacity-50 hover:bg-transparent hover:text-gray-400',
+                              'cursor-not-allowed opacity-50 hover:bg-transparent hover:text-muted-foreground',
                           )}
                         >
                           <Pencil className="h-3.5 w-3.5" />
@@ -154,9 +154,9 @@ export function MemberFunctionManager({
                           onClick={() => handleDelete(fn.id)}
                           disabled={fn.is_default || isBusy}
                           className={cn(
-                            'rounded p-1 text-gray-400 hover:bg-red-50 hover:text-red-500',
+                            'rounded p-1 text-muted-foreground hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-950/30',
                             (fn.is_default || isBusy) &&
-                              'cursor-not-allowed opacity-50 hover:bg-transparent hover:text-gray-400',
+                              'cursor-not-allowed opacity-50 hover:bg-transparent hover:text-muted-foreground',
                           )}
                         >
                           <Trash2 className="h-3.5 w-3.5" />

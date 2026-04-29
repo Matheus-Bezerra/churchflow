@@ -178,11 +178,11 @@ export function CreateScheduleModal({
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="flex max-h-[90dvh] max-w-2xl flex-col gap-0 overflow-hidden p-0 sm:max-w-3xl">
-        <DialogHeader className="shrink-0 border-gray-100 border-b px-6 pt-6 pb-4">
-          <DialogTitle className="font-bold text-gray-900 text-xl">
+        <DialogHeader className="shrink-0 border-b px-6 pt-6 pb-4">
+          <DialogTitle className="font-bold text-foreground text-xl">
             Nova Escala
           </DialogTitle>
-          <DialogDescription className="text-gray-500 text-sm">
+          <DialogDescription className="text-muted-foreground text-sm">
             Crie uma nova escala de serviço vinculada a um evento
           </DialogDescription>
         </DialogHeader>
@@ -222,7 +222,7 @@ export function CreateScheduleModal({
                           />
                           <span>{event.name}</span>
                           {label && (
-                            <span className="text-gray-400 text-xs">· {label}</span>
+                            <span className="text-muted-foreground text-xs">· {label}</span>
                           )}
                         </span>
                       </SelectItem>
@@ -266,13 +266,13 @@ export function CreateScheduleModal({
               return (
                 <div
                   key={draft.ministry_id}
-                  className="space-y-4 rounded-lg border border-gray-200 bg-gray-50 p-4"
+                  className="space-y-4 rounded-lg border bg-muted/40 p-4"
                 >
                   <div>
-                    <p className="font-semibold text-gray-900 text-sm">
+                    <p className="font-semibold text-foreground text-sm">
                       {ministry?.name ?? draft.ministry_id}
                     </p>
-                    <p className="text-gray-500 text-xs">
+                    <p className="text-muted-foreground text-xs">
                       {requirement?.required_count ?? 0} voluntário
                       {(requirement?.required_count ?? 0) !== 1 ? 's' : ''} planejado
                       {(requirement?.required_count ?? 0) !== 1 ? 's' : ''}
@@ -293,7 +293,7 @@ export function CreateScheduleModal({
                             })
                           }
                         >
-                          <SelectTrigger className="flex-1 bg-white">
+                          <SelectTrigger className="flex-1 bg-background">
                             <SelectValue placeholder="Selecione o voluntário" />
                           </SelectTrigger>
                           <SelectContent>
@@ -325,7 +325,7 @@ export function CreateScheduleModal({
                             })
                           }
                           placeholder="Função / cargo"
-                          className="w-40 bg-white"
+                          className="w-40 bg-background"
                         />
                       </div>
                     ))}

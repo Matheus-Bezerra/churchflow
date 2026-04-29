@@ -94,7 +94,7 @@ export function EventMinistryPicker({
                       'flex h-4 w-4 shrink-0 items-center justify-center rounded border',
                       checked
                         ? 'border-blue-600 bg-blue-600 text-white'
-                        : 'border-gray-300',
+                        : 'border-input',
                     )}
                   >
                     {checked && <Check className="h-3 w-3" />}
@@ -114,7 +114,7 @@ export function EventMinistryPicker({
       {/* Per-ministry requirement rows */}
       {requirements.length > 0 && (
         <div className="mt-3 space-y-2">
-          <p className="font-medium text-gray-500 text-xs">
+          <p className="font-medium text-muted-foreground text-xs">
             Pessoas necessárias por ministério
           </p>
           {requirements.map((req) => {
@@ -123,14 +123,14 @@ export function EventMinistryPicker({
             return (
               <div
                 key={req.ministry_id}
-                className="flex items-center gap-3 rounded-lg border border-gray-100 bg-gray-50 px-3 py-2"
+                className="flex items-center gap-3 rounded-lg border bg-muted/40 px-3 py-2"
               >
                 {/* Ministry identity */}
                 <span
                   className="h-2.5 w-2.5 shrink-0 rounded-full"
                   style={{ backgroundColor: ministry.color }}
                 />
-                <span className="min-w-0 flex-1 truncate text-gray-700 text-sm">
+                <span className="min-w-0 flex-1 truncate text-foreground text-sm">
                   {ministry.name}
                 </span>
 
@@ -139,7 +139,7 @@ export function EventMinistryPicker({
                   <button
                     type="button"
                     onClick={() => handleCountChange(req.ministry_id, -1, req.required_count)}
-                    className="flex h-6 w-6 items-center justify-center rounded border border-gray-200 bg-white text-gray-500 hover:border-gray-300 hover:bg-gray-100 disabled:opacity-40"
+                    className="flex h-6 w-6 items-center justify-center rounded border bg-background text-muted-foreground hover:bg-muted disabled:opacity-40"
                     disabled={req.required_count <= 1}
                   >
                     <Minus className="h-3 w-3" />
@@ -149,18 +149,18 @@ export function EventMinistryPicker({
                     min={1}
                     value={req.required_count}
                     onChange={(e) => handleInputChange(req.ministry_id, e.target.value)}
-                    className="h-6 w-10 rounded border border-gray-200 bg-white text-center text-gray-900 text-sm focus:border-blue-500 focus:outline-none"
+                    className="h-6 w-10 rounded border bg-background text-center text-foreground text-sm focus:border-blue-500 focus:outline-none"
                   />
                   <button
                     type="button"
                     onClick={() => handleCountChange(req.ministry_id, 1, req.required_count)}
-                    className="flex h-6 w-6 items-center justify-center rounded border border-gray-200 bg-white text-gray-500 hover:border-gray-300 hover:bg-gray-100"
+                    className="flex h-6 w-6 items-center justify-center rounded border bg-background text-muted-foreground hover:bg-muted"
                   >
                     <Plus className="h-3 w-3" />
                   </button>
                 </div>
 
-                <span className="shrink-0 text-gray-400 text-xs">
+                <span className="shrink-0 text-muted-foreground text-xs">
                   {req.required_count === 1 ? 'pessoa' : 'pessoas'}
                 </span>
 
@@ -168,7 +168,7 @@ export function EventMinistryPicker({
                 <button
                   type="button"
                   onClick={() => onToggle(req.ministry_id)}
-                  className="ml-1 rounded-full p-0.5 text-gray-400 hover:bg-gray-200 hover:text-gray-600"
+                  className="ml-1 rounded-full p-0.5 text-muted-foreground hover:bg-muted hover:text-foreground"
                 >
                   <X className="h-3.5 w-3.5" />
                 </button>

@@ -9,6 +9,7 @@ import {
   Trash2,
   Users,
 } from 'lucide-react'
+import Link from 'next/link'
 import { useState } from 'react'
 
 import { Badge } from '@/components/ui/badge'
@@ -54,13 +55,14 @@ export function EventCard({
     : []
 
   return (
-    <Card
-      className={cn(
-        'border border-gray-200 shadow-sm transition-shadow hover:shadow-md',
-        menuOpen && 'ring-1 ring-blue-200',
-      )}
-    >
-      <CardContent className="p-5">
+    <Link href={`/events/${event.id}`} className="block">
+      <Card
+        className={cn(
+          'border shadow-sm transition-shadow hover:shadow-md',
+          menuOpen && 'ring-1 ring-blue-200',
+        )}
+      >
+        <CardContent className="p-5">
         {/* Header */}
         <div className="mb-4 flex items-start justify-between">
           <div className="flex items-center gap-3">
@@ -71,17 +73,20 @@ export function EventCard({
               <Icon className="h-5 w-5" style={{ color: event.color }} />
             </div>
             <div className="min-w-0">
-              <h3 className="truncate font-semibold text-gray-900 text-sm">
+              <h3 className="truncate font-semibold text-foreground text-sm">
                 {event.name}
               </h3>
-              <span className="text-gray-500 text-xs">
+              <span className="text-muted-foreground text-xs">
                 {eventType?.label ?? '—'}
               </span>
             </div>
           </div>
 
           <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
-            <DropdownMenuTrigger className="flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent focus-visible:outline-none">
+            <DropdownMenuTrigger
+              onClick={(event) => event.preventDefault()}
+              className="flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent focus-visible:outline-none"
+            >
               <MoreHorizontal className="h-4 w-4" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -107,7 +112,7 @@ export function EventCard({
 
         {/* Description */}
         {event.description && (
-          <p className="mb-3 line-clamp-2 text-gray-500 text-xs leading-relaxed">
+          <p className="mb-3 line-clamp-2 text-muted-foreground text-xs leading-relaxed">
             {event.description}
           </p>
         )}
@@ -131,24 +136,24 @@ export function EventCard({
               return (
                 <div
                   key={day}
-                  className="flex items-center gap-2 text-gray-600 text-xs"
+                  className="flex items-center gap-2 text-muted-foreground text-xs"
                 >
-                  <Clock className="h-3.5 w-3.5 shrink-0 text-gray-400" />
+                  <Clock className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
                   <span className="font-medium">
                     {isMonthly ? `Dia ${day}` : day}
                   </span>
-                  <span className="text-gray-400">{times.join(' · ')}</span>
+                    <span className="text-muted-foreground">{times.join(' · ')}</span>
                 </div>
               )
             })
           ) : (
-            <div className="flex items-center gap-2 text-gray-600 text-xs">
-              <Calendar className="h-3.5 w-3.5 shrink-0 text-gray-400" />
+            <div className="flex items-center gap-2 text-muted-foreground text-xs">
+              <Calendar className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
               <span>{event.date ? formatDate(event.date) : '—'}</span>
               {event.time && (
                 <>
-                  <span className="text-gray-400">·</span>
-                  <Clock className="h-3.5 w-3.5 shrink-0 text-gray-400" />
+                  <span className="text-muted-foreground">·</span>
+                  <Clock className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
                   <span>{event.time}</span>
                 </>
               )}
@@ -158,8 +163,8 @@ export function EventCard({
 
         {/* Ministries */}
         {ministries.length > 0 && (
-          <div className="space-y-1.5 border-gray-100 border-t pt-3">
-            <div className="flex items-center gap-1 text-gray-400 text-xs">
+          <div className="space-y-1.5 border-t pt-3">
+            <div className="flex items-center gap-1 text-muted-foreground text-xs">
               <Users className="h-3.5 w-3.5 shrink-0" />
               <span>Ministérios</span>
             </div>
@@ -184,14 +189,15 @@ export function EventCard({
                 )
               })}
               {extraCount > 0 && (
-                <Badge className="bg-gray-100 text-[11px] text-gray-500">
+                <Badge className="bg-muted text-[11px] text-muted-foreground">
                   +{extraCount}
                 </Badge>
               )}
             </div>
           </div>
         )}
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </Link>
   )
 }

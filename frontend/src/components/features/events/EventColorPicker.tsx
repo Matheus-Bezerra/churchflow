@@ -36,7 +36,7 @@ export function EventColorPicker({ control, error }: EventColorPickerProps) {
                   className={cn(
                     'h-8 w-8 rounded-full border-2 transition-transform hover:scale-110',
                     field.value === c.value
-                      ? 'scale-110 border-gray-900'
+                      ? 'scale-110 border-foreground'
                       : 'border-transparent',
                   )}
                   style={{ backgroundColor: c.value }}
@@ -49,14 +49,14 @@ export function EventColorPicker({ control, error }: EventColorPickerProps) {
                 className={cn(
                   'relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-2 transition-transform hover:scale-110',
                   isCustomColor
-                    ? 'scale-110 border-gray-900'
-                    : 'border-gray-300 border-dashed',
+                    ? 'scale-110 border-foreground'
+                    : 'border-border border-dashed',
                 )}
                 style={{
                   backgroundColor: isCustomColor ? field.value : undefined,
                 }}
               >
-                {!isCustomColor && <Plus className="h-4 w-4 text-gray-400" />}
+                {!isCustomColor && <Plus className="h-4 w-4 text-muted-foreground" />}
                 <input
                   type="color"
                   value={field.value || '#000000'}

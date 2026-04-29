@@ -213,13 +213,13 @@ export function GenerateScheduleModal({
             const ministry = mockMinistries.find((item) => item.id === requirement.ministry_id)
             const rows = volunteersByMinistry[requirement.ministry_id] ?? []
             return (
-              <div key={requirement.ministry_id} className="space-y-3 rounded-lg border border-gray-200 p-3">
+              <div key={requirement.ministry_id} className="space-y-3 rounded-lg border p-3">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-gray-900 text-sm">
+                    <p className="font-medium text-foreground text-sm">
                       {ministry?.name ?? requirement.ministry_id}
                     </p>
-                    <p className="text-gray-500 text-xs">
+                    <p className="text-muted-foreground text-xs">
                       Necessarios: {requirement.required_count}
                     </p>
                   </div>

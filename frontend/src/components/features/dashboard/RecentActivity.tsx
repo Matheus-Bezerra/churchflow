@@ -29,7 +29,7 @@ export function RecentActivity() {
   return (
     <Card className="border-0 shadow-sm">
       <CardHeader className="pb-4">
-        <CardTitle className="flex items-center gap-2 font-semibold text-base text-gray-900">
+        <CardTitle className="flex items-center gap-2 font-semibold text-base text-foreground">
           <Calendar className="h-4 w-4 text-blue-600" />
           Atividade Recente
         </CardTitle>
@@ -54,15 +54,16 @@ export function RecentActivity() {
                         {getInitials(activity.user_name)}
                       </AvatarFallback>
                     </Avatar>
-                    <span className="absolute -right-0.5 -bottom-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-white ring-1 ring-gray-200">
+                    <span className="absolute -right-0.5 -bottom-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-background ring-1 ring-border">
                       {activityIcons[activity.type]}
                     </span>
                   </div>
+
                   <div className="min-w-0 flex-1">
-                    <p className="text-gray-700 text-sm leading-snug">
+                    <p className="text-foreground text-sm leading-snug">
                       {activity.description}
                     </p>
-                    <p className="mt-0.5 text-gray-400 text-xs">
+                    <p className="mt-0.5 text-muted-foreground text-xs">
                       {formatDistanceToNow(activity.created_at)}
                     </p>
                   </div>

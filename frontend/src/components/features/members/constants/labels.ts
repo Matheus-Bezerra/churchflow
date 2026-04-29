@@ -8,7 +8,7 @@ export const MEMBER_STATUS_CONFIG: Record<
   },
   inactive: {
     label: 'Inativo',
-    className: 'bg-gray-100 text-gray-600 hover:bg-gray-100',
+    className: 'bg-muted text-muted-foreground hover:bg-muted',
   },
   visitor: {
     label: 'Visitante',

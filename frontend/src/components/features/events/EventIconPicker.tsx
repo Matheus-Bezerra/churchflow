@@ -5,6 +5,7 @@ import { Controller } from 'react-hook-form'
 
 import { Field, FieldLabel } from '@/components/ui/field'
 import { EVENT_ICON_NAMES, getEventIcon } from '@/lib/iconMap'
+import { cn } from '@/lib/utils'
 import type { EventFormData } from '@/schemas/event'
 
 interface EventIconPickerProps {
@@ -35,7 +36,7 @@ export function EventIconPicker({
                   type="button"
                   title={iconName}
                   onClick={() => field.onChange(iconName)}
-                  className="flex items-center justify-center rounded-lg border p-2.5 transition-colors hover:border-gray-300"
+                  className="flex items-center justify-center rounded-lg border p-2.5 transition-colors hover:border-border"
                   style={
                     selected
                       ? {
@@ -46,8 +47,8 @@ export function EventIconPicker({
                   }
                 >
                   <Icon
-                    className="h-5 w-5"
-                    style={{ color: selected ? selectedColor : '#6B7280' }}
+                    className={cn('h-5 w-5', !selected && 'text-muted-foreground')}
+                    style={{ color: selected ? selectedColor : undefined }}
                   />
                 </button>
               )

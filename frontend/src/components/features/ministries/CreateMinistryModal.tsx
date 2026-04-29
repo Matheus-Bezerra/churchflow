@@ -89,7 +89,7 @@ function MultiSelect({
           selected.map((u) => (
             <span
               key={u.id}
-              className="flex items-center gap-1 rounded-full bg-gray-100 py-0.5 pr-1.5 pl-1 text-gray-700 text-xs"
+              className="flex items-center gap-1 rounded-full bg-muted py-0.5 pr-1.5 pl-1 text-foreground text-xs"
             >
               <Avatar className="h-4 w-4">
                 <AvatarImage src={u.avatar_url} />
@@ -102,14 +102,14 @@ function MultiSelect({
               </Avatar>
               {u.name.split(' ')[0]}
               {badgeLabel && (
-                <span className="ml-0.5 text-[10px] text-gray-400">
+                <span className="ml-0.5 text-[10px] text-muted-foreground">
                   · {badgeLabel}
                 </span>
               )}
               <button
                 type="button"
                 onClick={(e) => remove(u.id, e)}
-                className="ml-0.5 rounded-full hover:text-gray-900"
+                className="ml-0.5 rounded-full hover:text-foreground"
               >
                 <X className="h-2.5 w-2.5" />
               </button>
@@ -118,7 +118,7 @@ function MultiSelect({
         )}
         <ChevronDown
           className={cn(
-            'ml-auto h-4 w-4 shrink-0 text-gray-400 transition-transform',
+            'ml-auto h-4 w-4 shrink-0 text-muted-foreground transition-transform',
             open && 'rotate-180',
           )}
         />
@@ -148,7 +148,7 @@ function MultiSelect({
             </div>
             <ul className="max-h-52 overflow-y-auto p-1">
               {filtered.length === 0 ? (
-                <li className="py-4 text-center text-gray-400 text-xs">
+                <li className="py-4 text-center text-muted-foreground text-xs">
                   Nenhum resultado
                 </li>
               ) : (
@@ -168,8 +168,8 @@ function MultiSelect({
                           className={cn(
                             'flex h-4 w-4 shrink-0 items-center justify-center rounded border',
                             checked
-                              ? 'border-blue-600 bg-blue-600'
-                              : 'border-gray-300',
+                          ? 'border-blue-600 bg-blue-600'
+                            : 'border-input',
                           )}
                         >
                           {checked && <Check className="h-3 w-3 text-white" />}
@@ -288,11 +288,11 @@ export function CreateMinistryModal({
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="flex max-h-[90dvh] max-w-2xl flex-col gap-0 overflow-hidden p-0 sm:max-w-3xl">
-        <DialogHeader className="shrink-0 border-gray-100 border-b px-6 pt-6 pb-4">
-          <DialogTitle className="font-bold text-gray-900 text-xl">
+        <DialogHeader className="shrink-0 border-b px-6 pt-6 pb-4">
+          <DialogTitle className="font-bold text-foreground text-xl">
             Novo Ministério
           </DialogTitle>
-          <DialogDescription className="text-gray-500 text-sm">
+          <DialogDescription className="text-muted-foreground text-sm">
             Preencha os dados do novo ministério
           </DialogDescription>
         </DialogHeader>
@@ -491,7 +491,7 @@ export function CreateMinistryModal({
                           type="button"
                           title={iconName}
                           onClick={() => field.onChange(iconName)}
-                          className="flex items-center justify-center rounded-lg border p-2.5 transition-colors hover:border-gray-300"
+                          className="flex items-center justify-center rounded-lg border p-2.5 transition-colors hover:border-foreground/30"
                           style={
                             selected
                               ? {
@@ -502,10 +502,8 @@ export function CreateMinistryModal({
                           }
                         >
                           <Icon
-                            className="h-5 w-5"
-                            style={{
-                              color: selected ? selectedColor : '#6B7280',
-                            }}
+                            className={cn('h-5 w-5', !selected && 'text-muted-foreground')}
+                            style={selected ? { color: selectedColor } : undefined}
                           />
                         </button>
                       )
@@ -532,8 +530,8 @@ export function CreateMinistryModal({
                         className={cn(
                           'h-8 w-8 rounded-full border-2 transition-transform hover:scale-110',
                           field.value === c.value
-                            ? 'scale-110 border-gray-900'
-                            : 'border-transparent',
+                          ? 'scale-110 border-foreground'
+                          : 'border-transparent',
                         )}
                         style={{ backgroundColor: c.value }}
                       />
@@ -545,8 +543,8 @@ export function CreateMinistryModal({
                         'relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-2 transition-transform hover:scale-110',
                         !PRESET_COLORS.some((c) => c.value === field.value) &&
                           field.value
-                          ? 'scale-110 border-gray-900'
-                          : 'border-gray-300 border-dashed',
+                          ? 'scale-110 border-foreground'
+                          : 'border-border border-dashed',
                       )}
                       style={{
                         backgroundColor:
@@ -558,7 +556,7 @@ export function CreateMinistryModal({
                     >
                       {(!field.value ||
                         PRESET_COLORS.some((c) => c.value === field.value)) && (
-                        <Plus className="h-4 w-4 text-gray-400" />
+                        <Plus className="h-4 w-4 text-muted-foreground" />
                       )}
                       <input
                         ref={colorInputRef}

@@ -51,10 +51,10 @@ export function EventRecurrenceSection({
     <>
       {/* Recurring toggle */}
       <Field>
-        <div className="flex items-center justify-between rounded-lg border border-gray-200 px-4 py-3">
+        <div className="flex items-center justify-between rounded-lg border px-4 py-3">
           <div>
-            <p className="font-medium text-gray-800 text-sm">Evento recorrente</p>
-            <p className="text-gray-500 text-xs">
+            <p className="font-medium text-foreground text-sm">Evento recorrente</p>
+            <p className="text-muted-foreground text-xs">
               Repete com um padrão semanal ou mensal
             </p>
           </div>
@@ -74,7 +74,7 @@ export function EventRecurrenceSection({
                 }}
                 className={cn(
                   'relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2',
-                  field.value ? 'bg-blue-600' : 'bg-gray-200',
+                  field.value ? 'bg-blue-600' : 'bg-muted',
                 )}
               >
                 <span
@@ -120,7 +120,7 @@ export function EventRecurrenceSection({
         <>
           <Field>
             <FieldLabel>Padrão de recorrência</FieldLabel>
-            <div className="flex overflow-hidden rounded-lg border border-gray-200 text-sm">
+            <div className="flex overflow-hidden rounded-lg border text-sm">
               <Controller
                 name="recurrence_type"
                 control={control}
@@ -136,8 +136,8 @@ export function EventRecurrenceSection({
                       className={cn(
                         'flex-1 py-1.5 font-medium transition-colors',
                         field.value === 'weekly'
-                          ? 'bg-blue-50 text-blue-700'
-                          : 'bg-white text-gray-500 hover:bg-gray-50',
+                          ? 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400'
+                          : 'bg-background text-muted-foreground hover:bg-muted/50',
                       )}
                     >
                       Semanal
@@ -152,8 +152,8 @@ export function EventRecurrenceSection({
                       className={cn(
                         'flex-1 py-1.5 font-medium transition-colors',
                         field.value === 'monthly'
-                          ? 'bg-blue-50 text-blue-700'
-                          : 'bg-white text-gray-500 hover:bg-gray-50',
+                          ? 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400'
+                          : 'bg-background text-muted-foreground hover:bg-muted/50',
                       )}
                     >
                       Mensal
@@ -176,19 +176,19 @@ export function EventRecurrenceSection({
                 {recurrenceSlots.map((slot, i) => (
                   <div
                     key={`${slot.day}-${slot.time}-${String(i)}`}
-                    className="flex items-center justify-between rounded-md border border-gray-200 bg-gray-50 px-3 py-1.5"
+                    className="flex items-center justify-between rounded-md border bg-muted/40 px-3 py-1.5"
                   >
-                    <span className="text-gray-700 text-sm">
+                    <span className="text-foreground text-sm">
                       <span className="font-medium">
                         {recurrenceType === 'monthly' ? `Dia ${slot.day}` : slot.day}
                       </span>
-                      <span className="mx-1.5 text-gray-400">·</span>
+                      <span className="mx-1.5 text-muted-foreground">·</span>
                       {slot.time}
                     </span>
                     <button
                       type="button"
                       onClick={() => removeSlot(i)}
-                      className="rounded p-0.5 text-gray-400 hover:bg-red-50 hover:text-red-500"
+                      className="rounded p-0.5 text-muted-foreground hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-950/30"
                     >
                       <X className="h-3.5 w-3.5" />
                     </button>

@@ -91,30 +91,138 @@ export function MembersTable({ members, isLoading }: MembersTableProps) {
 
   return (
     <>
-      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
+      <div className="space-y-3 md:hidden">
+        {paginated.length === 0 ? (
+          <div className="rounded-xl border py-12 text-center text-muted-foreground">
+            Nenhum membro encontrado.
+          </div>
+        ) : (
+          paginated.map((member) => {
+            const statusCfg = MEMBER_STATUS_CONFIG[member.status]
+            const hasWhatsapp = Boolean(member.phone && member.phone_is_whatsapp)
+            const whatsappUrl = whatsappLink(member.phone)
+
+            return (
+              <div
+                key={member.id}
+                className="rounded-xl border bg-background p-3 shadow-sm"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <Avatar className="h-9 w-9">
+                      <AvatarImage src={member.avatar_url} />
+                      <AvatarFallback
+                        className="font-semibold text-xs"
+                        style={getAvatarFallbackStyle(member.avatar_color)}
+                      >
+                        {getInitials(member.name)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="min-w-0">
+                      <p className="truncate font-medium text-foreground text-sm">
+                        {member.name}
+                      </p>
+                      <p className="truncate text-muted-foreground text-xs">
+                        {member.email}
+                      </p>
+                    </div>
+                  </div>
+                  <Badge className={statusCfg.className}>{statusCfg.label}</Badge>
+                </div>
+
+                <div className="mt-3 flex items-center justify-between">
+                  <div className="text-muted-foreground text-xs">
+                    {roleLabel(String(member.role))}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    {hasWhatsapp ? (
+                      <a
+                        href={whatsappUrl ?? ''}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label={`Chamar ${member.name} no WhatsApp`}
+                      >
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon-sm"
+                          className="text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700"
+                        >
+                          <MessageCircle className="h-4 w-4" />
+                        </Button>
+                      </a>
+                    ) : (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon-sm"
+                        className="cursor-not-allowed text-muted-foreground/40"
+                        disabled
+                        aria-label="Sem telefone"
+                      >
+                        <MessageCircle className="h-4 w-4" />
+                      </Button>
+                    )}
+
+                    <DropdownMenu>
+                      <DropdownMenuTrigger className="flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent focus-visible:outline-none">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => openProfile(member)}>
+                          <Eye className="mr-2 h-4 w-4" />
+                          Ver Perfil
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <Pencil className="mr-2 h-4 w-4" />
+                          Editar
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        {member.status === 'active' ? (
+                          <DropdownMenuItem className="text-amber-600">
+                            <UserX className="mr-2 h-4 w-4" />
+                            Inativar
+                          </DropdownMenuItem>
+                        ) : (
+                          <DropdownMenuItem className="text-emerald-600">
+                            <UserCheck className="mr-2 h-4 w-4" />
+                            Ativar
+                          </DropdownMenuItem>
+                        )}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                </div>
+              </div>
+            )
+          })
+        )}
+      </div>
+
+      <div className="hidden overflow-hidden rounded-xl border md:block">
         <Table>
           <TableHeader>
-            <TableRow className="bg-gray-50">
-              <TableHead className="font-semibold text-gray-600">
+            <TableRow className="bg-muted/50">
+              <TableHead className="font-semibold text-muted-foreground">
                 Membro
               </TableHead>
-              <TableHead className="hidden font-semibold text-gray-600 md:table-cell">
+              <TableHead className="hidden font-semibold text-muted-foreground md:table-cell">
                 Contato
               </TableHead>
 
-              <TableHead className="hidden font-semibold text-gray-600 lg:table-cell">
+              <TableHead className="hidden font-semibold text-muted-foreground lg:table-cell">
                 Função
               </TableHead>
-              <TableHead className="hidden font-semibold text-gray-600 xl:table-cell">
+              <TableHead className="hidden font-semibold text-muted-foreground xl:table-cell">
                 Ministérios
               </TableHead>
-              <TableHead className="hidden font-semibold text-gray-600 xl:table-cell">
+              <TableHead className="hidden font-semibold text-muted-foreground xl:table-cell">
                 Célula
               </TableHead>
-              <TableHead className="font-semibold text-gray-600">
+              <TableHead className="font-semibold text-muted-foreground">
                 Status
               </TableHead>
-              <TableHead className="w-10 text-center font-semibold text-gray-600">
+              <TableHead className="w-10 text-center font-semibold text-muted-foreground">
                 WhatsApp
               </TableHead>
               <TableHead className="w-10" />
@@ -125,7 +233,7 @@ export function MembersTable({ members, isLoading }: MembersTableProps) {
               <TableRow>
                 <TableCell
                   colSpan={8}
-                  className="py-12 text-center text-gray-400"
+                  className="py-12 text-center text-muted-foreground"
                 >
                   Nenhum membro encontrado.
                 </TableCell>
@@ -144,7 +252,7 @@ export function MembersTable({ members, isLoading }: MembersTableProps) {
                 const whatsappUrl = whatsappLink(member.phone)
 
                 return (
-                  <TableRow key={member.id} className="hover:bg-gray-50/50">
+                  <TableRow key={member.id} className="hover:bg-muted/50">
                     <TableCell>
                       <div className="flex items-center gap-3">
                         <Avatar className="h-9 w-9">
@@ -157,10 +265,10 @@ export function MembersTable({ members, isLoading }: MembersTableProps) {
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <p className="font-medium text-gray-900 text-sm">
+                          <p className="font-medium text-foreground text-sm">
                             {member.name}
                           </p>
-                          <p className="text-gray-400 text-xs md:hidden">
+                          <p className="text-muted-foreground text-xs md:hidden">
                             {member.email}
                           </p>
                         </div>
@@ -168,13 +276,17 @@ export function MembersTable({ members, isLoading }: MembersTableProps) {
                     </TableCell>
                     <TableCell className="hidden md:table-cell">
                       <div>
-                        <p className="text-gray-700 text-sm">{member.email}</p>
-                        <p className="text-gray-400 text-xs">{member.phone}</p>
+                        <p className="text-foreground text-sm">
+                          {member.email}
+                        </p>
+                        <p className="text-muted-foreground text-xs">
+                          {member.phone}
+                        </p>
                       </div>
                     </TableCell>
 
                     <TableCell className="hidden lg:table-cell">
-                      <span className="text-gray-600 text-sm">
+                      <span className="text-muted-foreground text-sm">
                         {roleLabel(String(member.role))}
                       </span>
                     </TableCell>
@@ -201,7 +313,7 @@ export function MembersTable({ members, isLoading }: MembersTableProps) {
                       </div>
                     </TableCell>
                     <TableCell className="hidden xl:table-cell">
-                      <span className="text-gray-500 text-sm">
+                      <span className="text-muted-foreground text-sm">
                         {cell?.name ?? '—'}
                       </span>
                     </TableCell>
@@ -232,7 +344,7 @@ export function MembersTable({ members, isLoading }: MembersTableProps) {
                           type="button"
                           variant="ghost"
                           size="icon-sm"
-                          className="cursor-not-allowed text-gray-300"
+                          className="cursor-not-allowed text-muted-foreground/40"
                           disabled
                           aria-label="Sem telefone"
                         >
@@ -280,7 +392,7 @@ export function MembersTable({ members, isLoading }: MembersTableProps) {
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-between pt-2">
-          <p className="text-gray-500 text-sm">
+          <p className="text-muted-foreground text-sm">
             {members.length} membros · Página {page} de {totalPages}
           </p>
           <div className="flex gap-2">

@@ -24,8 +24,8 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="font-bold text-2xl text-gray-900">Resumo</h2>
-        <p className="mt-1 text-gray-500 text-sm">
+        <h2 className="font-bold text-2xl text-foreground">Resumo</h2>
+        <p className="mt-1 text-muted-foreground text-sm">
           Bem-vindo de volta, Pastor Adilson. Aqui está o resumo da sua igreja.
         </p>
       </div>

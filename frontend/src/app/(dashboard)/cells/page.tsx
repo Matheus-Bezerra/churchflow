@@ -4,16 +4,9 @@ import { Activity, Network, Plus, TrendingUp, Users } from 'lucide-react'
 import { useState } from 'react'
 
 import { CellCard } from '@/components/features/cells/CellCard'
+import { CreateCellModal } from '@/components/features/cells/CreateCellModal'
 import { StatsCard } from '@/components/features/dashboard/StatsCard'
 import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useCells, useCellsStats } from '@/hooks/queries/useCells'
 
@@ -26,8 +19,8 @@ export default function CellsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="font-bold text-2xl text-gray-900">Células</h2>
-          <p className="mt-1 text-gray-500 text-sm">
+          <h2 className="font-bold text-2xl text-foreground">Células</h2>
+          <p className="mt-1 text-muted-foreground text-sm">
             Gerencie os grupos de crescimento da sua igreja
           </p>
         </div>
@@ -41,7 +34,7 @@ export default function CellsPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatsCard
           title="Total de Células"
           value={stats?.total_cells ?? 0}
@@ -83,12 +76,12 @@ export default function CellsPage() {
           ))}
         </div>
       ) : cells.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-xl border border-gray-300 border-dashed bg-white py-16 text-center">
-          <Network className="mb-3 h-10 w-10 text-gray-300" />
-          <p className="font-medium text-gray-400 text-sm">
+        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed py-16 text-center">
+          <Network className="mb-3 h-10 w-10 text-muted-foreground/40" />
+          <p className="font-medium text-muted-foreground text-sm">
             Nenhuma célula cadastrada
           </p>
-          <p className="mt-1 text-gray-400 text-xs">
+          <p className="mt-1 text-muted-foreground text-xs">
             Clique em &quot;Nova Célula&quot; para começar
           </p>
         </div>
@@ -100,45 +93,7 @@ export default function CellsPage() {
         </div>
       )}
 
-      {/* Create placeholder modal */}
-      <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-        <DialogContent className="max-w-md sm:max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>Nova Célula</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-2">
-            <div className="space-y-2">
-              <Label htmlFor="cell-name">Nome da Célula</Label>
-              <Input id="cell-name" placeholder="Ex.: Célula Esperança" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="cell-address">Endereço de Reunião</Label>
-              <Input id="cell-address" placeholder="Rua, número" />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="cell-day">Dia da semana</Label>
-                <Input id="cell-day" placeholder="Ex.: Quarta" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="cell-time">Horário</Label>
-                <Input id="cell-time" type="time" defaultValue="19:30" />
-              </div>
-            </div>
-            <div className="flex justify-end gap-2 pt-2">
-              <Button variant="outline" onClick={() => setCreateOpen(false)}>
-                Cancelar
-              </Button>
-              <Button
-                className="bg-blue-600 hover:bg-blue-700"
-                onClick={() => setCreateOpen(false)}
-              >
-                Criar Célula
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <CreateCellModal open={createOpen} onOpenChange={setCreateOpen} />
     </div>
   )
 }

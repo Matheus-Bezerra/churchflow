@@ -63,8 +63,8 @@ function ContentSection({ lines }: ContentSectionProps) {
     needsTruncation && !expanded ? lines.slice(0, CONTENT_PREVIEW_LIMIT) : lines
 
   return (
-    <div className="rounded-md border border-blue-100 bg-blue-50 p-3">
-      <p className="mb-1.5 font-medium text-[11px] text-blue-800 uppercase tracking-wide">
+    <div className="rounded-md border border-blue-200/80 bg-blue-100/70 p-3 dark:border-blue-900/50 dark:bg-blue-950/35">
+      <p className="mb-1.5 font-medium text-[11px] text-blue-800 uppercase tracking-wide dark:text-blue-300">
         Conteúdo
       </p>
       <ul className="space-y-1">
@@ -75,7 +75,7 @@ function ContentSection({ lines }: ContentSectionProps) {
                 href={line}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-1 text-blue-700 text-xs hover:underline"
+                className="inline-flex items-center gap-1 text-blue-700 text-xs hover:underline dark:text-blue-300"
               >
                 <ExternalLink className="h-3 w-3 shrink-0" />
                 {formatLinkLabel(line)}
@@ -84,7 +84,7 @@ function ContentSection({ lines }: ContentSectionProps) {
           ) : (
             <li
               key={`${line}-${i.toString()}`}
-              className="text-blue-900 text-xs leading-relaxed"
+              className="text-blue-900 text-xs leading-relaxed dark:text-blue-100"
             >
               {line}
             </li>
@@ -95,7 +95,7 @@ function ContentSection({ lines }: ContentSectionProps) {
         <button
           type="button"
           onClick={() => setExpanded((v) => !v)}
-          className="mt-2 inline-flex items-center gap-1 text-blue-600 text-xs hover:underline"
+          className="mt-2 inline-flex items-center gap-1 text-blue-700 text-xs hover:underline dark:text-blue-300"
         >
           {expanded ? (
             <>
@@ -149,7 +149,7 @@ export function EventScheduleGroup({ schedules }: EventScheduleGroupProps) {
 
   if (groups.length === 0) {
     return (
-      <div className="rounded-xl border border-gray-200 bg-white py-12 text-center text-gray-400">
+      <div className="rounded-xl border bg-background py-12 text-center text-muted-foreground">
         Nenhuma escala encontrada.
       </div>
     )
@@ -173,28 +173,28 @@ export function EventScheduleGroup({ schedules }: EventScheduleGroupProps) {
             <details
               key={getGroupKey(reference)}
               open
-              className="group overflow-hidden rounded-xl border border-gray-200 bg-white"
+              className="group overflow-hidden rounded-xl border bg-background"
             >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 bg-gray-50 px-4 py-3">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 bg-muted/50 px-4 py-3">
                 <div className="flex items-center gap-3">
                   <span
                     className="h-3 w-3 shrink-0 rounded-full"
                     style={{ backgroundColor: reference.event_color }}
                   />
                   <div>
-                    <p className="font-semibold text-gray-900 text-sm">
+                    <p className="font-semibold text-foreground text-sm">
                       {reference.event_name}
-                      <span className="ml-2 font-normal text-gray-500 text-xs">
+                      <span className="ml-2 font-normal text-muted-foreground text-xs">
                         {formatDate(reference.event_occurrence_date)}
                       </span>
                     </p>
-                    <p className="text-gray-500 text-xs">
+                    <p className="text-muted-foreground text-xs">
                       {totalConfirmed}/{totalVolunteers} voluntários confirmados
                       · {group.length} ministério{group.length !== 1 ? 's' : ''}
                     </p>
                   </div>
                 </div>
-                <ChevronDown className="h-4 w-4 shrink-0 text-gray-400 transition group-open:rotate-180" />
+                <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition group-open:rotate-180" />
               </summary>
 
               <div className="space-y-3 p-4">
@@ -210,7 +210,7 @@ export function EventScheduleGroup({ schedules }: EventScheduleGroupProps) {
                   return (
                     <div
                       key={schedule.id}
-                      className="space-y-3 rounded-lg border border-gray-200 bg-gray-50 p-3"
+                      className="space-y-3 rounded-lg border bg-muted/40 p-3"
                     >
                       {/* Ministry header */}
                       <div className="flex flex-wrap items-center justify-between gap-2">
@@ -224,7 +224,7 @@ export function EventScheduleGroup({ schedules }: EventScheduleGroupProps) {
                           >
                             {schedule.ministry_name}
                           </Badge>
-                          <span className="text-gray-500 text-xs">
+                          <span className="text-muted-foreground text-xs">
                             {confirmed}/{schedule.volunteers.length} confirmados
                           </span>
                         </div>
@@ -232,7 +232,7 @@ export function EventScheduleGroup({ schedules }: EventScheduleGroupProps) {
                           type="button"
                           variant="ghost"
                           size="sm"
-                          className="h-7 gap-1 text-gray-500 text-xs hover:text-gray-800"
+                          className="h-7 gap-1 text-muted-foreground text-xs hover:text-foreground"
                           onClick={() => setEditSchedule(schedule)}
                         >
                           <Pencil className="h-3 w-3" />

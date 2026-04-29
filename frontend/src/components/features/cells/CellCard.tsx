@@ -46,12 +46,12 @@ export function CellCard({ cell }: CellCardProps) {
 
   return (
     <Link href={`/cells/${cell.id}`} className="block">
-      <Card className="border border-gray-200 shadow-sm transition-shadow hover:shadow-md">
+      <Card className="border shadow-sm transition-shadow hover:shadow-md">
         <CardContent className="p-5">
           {/* Header */}
           <div className="mb-4 flex items-start justify-between">
             <div className="min-w-0 flex-1">
-              <h3 className="truncate font-semibold text-gray-900 text-sm">
+              <h3 className="truncate font-semibold text-foreground text-sm">
                 {cell.name}
               </h3>
               <div className="mt-1 flex items-center gap-1.5">
@@ -60,7 +60,7 @@ export function CellCard({ cell }: CellCardProps) {
                 >
                   {cell.meeting_day}
                 </span>
-                <span className="flex items-center gap-1 text-gray-400 text-xs">
+                <span className="flex items-center gap-1 text-muted-foreground text-xs">
                   <Clock className="h-3 w-3" />
                   {cell.meeting_time}
                 </span>
@@ -71,7 +71,7 @@ export function CellCard({ cell }: CellCardProps) {
                 onClick={(event) => event.preventDefault()}
                 className="flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent focus-visible:outline-none"
               >
-                <MoreHorizontal className="h-4 w-4 text-gray-400" />
+                <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem>
@@ -91,15 +91,13 @@ export function CellCard({ cell }: CellCardProps) {
             </DropdownMenu>
           </div>
 
-          {/* Address */}
           {cell.address && (
-            <div className="mb-4 flex items-center gap-1.5 text-gray-500 text-xs">
-              <MapPin className="h-3.5 w-3.5 shrink-0 text-gray-400" />
+            <div className="mb-4 flex items-center gap-1.5 text-muted-foreground text-xs">
+              <MapPin className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
               <span className="truncate">{cell.address}</span>
             </div>
           )}
 
-          {/* Leader */}
           {leader && (
             <div className="mb-4 flex items-center gap-2">
               <Avatar className="h-7 w-7">
@@ -111,25 +109,26 @@ export function CellCard({ cell }: CellCardProps) {
                 </AvatarFallback>
               </Avatar>
               <div className="min-w-0">
-                <p className="truncate font-medium text-gray-700 text-xs">
+                <p className="truncate font-medium text-foreground text-xs">
                   {leaderName}
                 </p>
-                <p className="text-[11px] text-gray-400">Líder da Célula</p>
+                <p className="text-[11px] text-muted-foreground">
+                  Líder da Célula
+                </p>
               </div>
             </div>
           )}
 
-          {/* Member count */}
-          <div className="flex items-center gap-1.5 border-gray-100 border-t pt-3">
-            <Users className="h-4 w-4 text-gray-400" />
-            <span className="font-medium text-gray-700 text-sm">
+          <div className="flex items-center gap-1.5 border-t pt-3">
+            <Users className="h-4 w-4 text-muted-foreground" />
+            <span className="font-medium text-foreground text-sm">
               {cell.member_count}
             </span>
-            <span className="text-gray-400 text-xs">membros</span>
+            <span className="text-muted-foreground text-xs">membros</span>
           </div>
 
           {lastMeeting && (
-            <p className="mt-2 text-gray-500 text-xs">
+            <p className="mt-2 text-muted-foreground text-xs">
               Última reunião: {lastMeeting.presentCount} presentes
             </p>
           )}

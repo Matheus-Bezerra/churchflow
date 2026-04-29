@@ -51,7 +51,7 @@ export function VolunteerRow({
   }
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-gray-200 bg-white p-3">
+    <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border bg-background p-3">
       <div className="flex min-w-0 flex-1 items-center gap-3">
         <Avatar className="h-8 w-8 shrink-0">
           <AvatarImage src={user?.avatar_url} />
@@ -102,10 +102,10 @@ export function VolunteerRow({
           </div>
         ) : (
           <div className="min-w-0">
-            <p className="font-medium text-gray-900 text-sm leading-tight">
+            <p className="font-medium text-foreground text-sm leading-tight">
               {user?.name ?? volunteer.user_id}
             </p>
-            <p className="text-gray-500 text-xs">{volunteer.role}</p>
+            <p className="text-muted-foreground text-xs">{volunteer.role}</p>
           </div>
         )}
       </div>
@@ -118,7 +118,7 @@ export function VolunteerRow({
               type="button"
               variant="ghost"
               size="sm"
-              className="h-7 gap-1 text-gray-500 text-xs hover:text-gray-800"
+              className="h-7 gap-1 text-muted-foreground text-xs hover:text-foreground"
               onClick={() => setSwapping(true)}
             >
               <ArrowLeftRight className="h-3 w-3" />

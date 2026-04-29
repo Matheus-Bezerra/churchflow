@@ -5,7 +5,6 @@ import {
   CalendarPlus,
   ChevronLeft,
   ChevronRight,
-  Church,
   ClipboardList,
   DollarSign,
   HeartHandshakeIcon,
@@ -14,6 +13,7 @@ import {
   Settings,
   Users,
 } from 'lucide-react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
@@ -52,7 +52,7 @@ export function Sidebar() {
     <aside
       data-testid="sidebar"
       className={cn(
-        'relative flex shrink-0 flex-col border-gray-200 border-r bg-white transition-all duration-300 ease-in-out',
+        'relative flex shrink-0 flex-col border-border border-r bg-card transition-all duration-300 ease-in-out',
         isOpen ? 'w-64' : 'w-16',
       )}
     >
@@ -61,25 +61,36 @@ export function Sidebar() {
         type="button"
         onClick={toggle}
         aria-label={isOpen ? 'Recolher sidebar' : 'Expandir sidebar'}
-        className="absolute top-5 -right-3 z-10 flex h-6 w-6 items-center justify-center rounded-full border border-gray-200 bg-white shadow-sm transition-colors hover:bg-gray-50"
+        className="absolute top-5 -right-3 z-10 flex h-6 w-6 items-center justify-center rounded-full border border-border bg-background shadow-sm transition-colors hover:bg-accent"
       >
         {isOpen ? (
-          <ChevronLeft className="h-3.5 w-3.5 text-gray-500" />
+          <ChevronLeft className="h-3.5 w-3.5 text-muted-foreground" />
         ) : (
-          <ChevronRight className="h-3.5 w-3.5 text-gray-500" />
+          <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
         )}
       </button>
 
-      {/* Logo */}
-      <div className="flex h-16 items-center border-gray-200 border-b px-4">
+      {/* Church branding */}
+      <div className="flex h-16 items-center border-border border-b px-4">
         <div className="flex items-center gap-3 overflow-hidden">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-600">
-            <Church className="h-4 w-4 text-white" />
+          <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-lg ring-1 ring-border">
+            <Image
+              src="/church-logo.jpg"
+              alt="Logo da Igreja"
+              fill
+              className="object-cover"
+              sizes="32px"
+            />
           </div>
           {isOpen && (
-            <span className="whitespace-nowrap font-semibold text-base text-gray-900">
-              ChurchFlow
-            </span>
+            <div className="hidden min-w-0 sm:block">
+              <p className="truncate whitespace-nowrap font-semibold text-base text-foreground">
+                AD Tatuapé
+              </p>
+              <p className="truncate text-muted-foreground text-xs">
+                Lugar de Esperança
+              </p>
+            </div>
           )}
         </div>
       </div>
@@ -88,7 +99,7 @@ export function Sidebar() {
       <nav className="flex-1 space-y-1 p-3">
         {navItems.map(({ href, label, icon: Icon, disabled }) => {
           const isActive =
-            !disabled && (pathname === href || pathname.startsWith(href + '/'))
+            !disabled && (pathname === href || pathname.startsWith(`${href}/`))
 
           if (disabled) {
             return (
@@ -96,14 +107,14 @@ export function Sidebar() {
                 <TooltipTrigger className="w-full">
                   <div
                     className={cn(
-                      'flex cursor-not-allowed select-none items-center gap-3 rounded-lg px-3 py-2.5 font-medium text-gray-400 text-sm',
+                      'flex cursor-not-allowed select-none items-center gap-3 rounded-lg px-3 py-2.5 font-medium text-muted-foreground/60 text-sm',
                       !isOpen && 'justify-center px-0',
                     )}
                   >
-                    <Icon className="h-5 w-5 shrink-0 text-gray-300" />
+                    <Icon className="h-5 w-5 shrink-0 text-muted-foreground/40" />
                     {isOpen && <span>{label}</span>}
                     {isOpen && (
-                      <span className="ml-auto rounded bg-gray-100 px-1.5 py-0.5 font-medium text-[10px] text-gray-400">
+                      <span className="ml-auto rounded bg-muted px-1.5 py-0.5 font-medium text-[10px] text-muted-foreground/70">
                         Em breve
                       </span>
                     )}
@@ -121,15 +132,15 @@ export function Sidebar() {
               className={cn(
                 'flex items-center gap-3 rounded-lg px-3 py-2.5 font-medium text-sm transition-colors',
                 isActive
-                  ? 'bg-blue-50 text-blue-700'
-                  : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900',
+                  ? 'bg-primary/15 text-primary'
+                  : 'text-muted-foreground hover:bg-accent hover:text-foreground',
                 !isOpen && 'justify-center px-0',
               )}
             >
               <Icon
                 className={cn(
                   'h-5 w-5 shrink-0',
-                  isActive ? 'text-blue-600' : 'text-gray-500',
+                  isActive ? 'text-primary' : 'text-muted-foreground',
                 )}
               />
               {isOpen && <span>{label}</span>}

@@ -25,7 +25,7 @@ export function UpcomingSchedules() {
   return (
     <Card className="border-0 shadow-sm">
       <CardHeader className="pb-4">
-        <CardTitle className="flex items-center gap-2 font-semibold text-base text-gray-900">
+        <CardTitle className="flex items-center gap-2 font-semibold text-base text-foreground">
           <Calendar className="h-4 w-4 text-blue-600" />
           Próximas Escalas
         </CardTitle>
@@ -47,7 +47,7 @@ export function UpcomingSchedules() {
               return (
                 <div
                   key={schedule.id}
-                  className="flex items-center gap-3 rounded-lg border border-gray-100 bg-gray-50/50 p-3"
+                  className="flex items-center gap-3 rounded-lg border p-3"
                 >
                   <div
                     className="h-2 w-2 shrink-0 rounded-full"
@@ -55,14 +55,14 @@ export function UpcomingSchedules() {
                   />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <p className="truncate font-medium text-gray-900 text-sm">
+                      <p className="truncate font-medium text-foreground text-sm">
                         {schedule.name}
                       </p>
                       {schedule.hasConflict && (
                         <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-amber-500" />
                       )}
                     </div>
-                    <p className="text-gray-400 text-xs">
+                    <p className="text-muted-foreground text-xs">
                       {schedule.event_name} ·{' '}
                       {formatDate(schedule.event_occurrence_date)}
                     </p>

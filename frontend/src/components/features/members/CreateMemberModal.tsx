@@ -196,11 +196,11 @@ export function CreateMemberModal({
     <>
       <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent className="flex max-h-[90dvh] flex-col gap-0 overflow-hidden p-0 sm:max-w-3xl">
-          <DialogHeader className="shrink-0 border-gray-100 border-b px-6 pt-6 pb-4">
-            <DialogTitle className="font-bold text-gray-900 text-xl">
+          <DialogHeader className="shrink-0 border-b px-6 pt-6 pb-4">
+            <DialogTitle className="font-bold text-foreground text-xl">
               Novo Membro
             </DialogTitle>
-            <DialogDescription className="text-gray-500 text-sm">
+            <DialogDescription className="text-muted-foreground text-sm">
               Preencha os dados do novo membro
             </DialogDescription>
           </DialogHeader>
@@ -277,16 +277,16 @@ export function CreateMemberModal({
                         type="button"
                         role="switch"
                         aria-checked={Boolean(field.value)}
-                        className="mt-3 flex w-full items-center justify-between rounded-md border border-gray-200 px-3 py-2 text-left hover:bg-gray-50"
+                        className="mt-3 flex w-full items-center justify-between rounded-md border px-3 py-2 text-left hover:bg-muted/50"
                         onClick={() => field.onChange(!field.value)}
                       >
-                        <span className="text-gray-700 text-xs">
+                        <span className="text-foreground text-xs">
                           Este numero e WhatsApp
                         </span>
                         <span
                           className={cn(
                             'relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors',
-                            field.value ? 'bg-emerald-600' : 'bg-gray-200',
+                            field.value ? 'bg-emerald-600' : 'bg-muted',
                           )}
                         >
                           <span
@@ -392,7 +392,7 @@ export function CreateMemberModal({
                 />
               </div>
 
-              <div className="overflow-hidden rounded-lg border border-gray-200">
+              <div className="overflow-hidden rounded-lg border">
                 <Controller
                   name="baptized"
                   control={control}
@@ -401,21 +401,21 @@ export function CreateMemberModal({
                       type="button"
                       role="switch"
                       aria-checked={Boolean(field.value)}
-                      className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-gray-50"
+                      className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-muted/50"
                       onClick={() => field.onChange(!field.value)}
                     >
                       <div>
-                        <p className="font-medium text-gray-800 text-sm">
+                        <p className="font-medium text-foreground text-sm">
                           Batizado
                         </p>
-                        <p className="text-gray-500 text-xs">
+                        <p className="text-muted-foreground text-xs">
                           Marque se o membro ja foi batizado
                         </p>
                       </div>
                       <span
                         className={cn(
                           'relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors',
-                          field.value ? 'bg-blue-600' : 'bg-gray-200',
+                          field.value ? 'bg-blue-600' : 'bg-muted',
                         )}
                       >
                         <span
@@ -430,7 +430,7 @@ export function CreateMemberModal({
                 />
 
                 {isBaptized && (
-                  <div className="space-y-3 border-gray-100 border-t px-4 py-4">
+                  <div className="space-y-3 border-t px-4 py-4">
                     <Field data-invalid={!!errors.baptism_date}>
                       <FieldLabel htmlFor="baptism_date">
                         Data do batismo *
@@ -448,7 +448,7 @@ export function CreateMemberModal({
                 )}
               </div>
 
-              <div className="space-y-4 rounded-lg border border-gray-200 p-4">
+              <div className="space-y-4 rounded-lg border p-4">
                 <Field data-invalid={!!errors.address}>
                   <FieldLabel htmlFor="address">Endereco</FieldLabel>
                   <Input
@@ -470,7 +470,7 @@ export function CreateMemberModal({
               </div>
 
               {/* Volunteer + ministries */}
-              <div className="overflow-hidden rounded-lg border border-gray-200">
+              <div className="overflow-hidden rounded-lg border">
                 <Controller
                   name="is_volunteer"
                   control={control}
@@ -479,21 +479,21 @@ export function CreateMemberModal({
                       type="button"
                       role="switch"
                       aria-checked={Boolean(field.value)}
-                      className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-gray-50"
+                      className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-muted/50"
                       onClick={() => field.onChange(!field.value)}
                     >
                       <div>
-                        <p className="font-medium text-gray-800 text-sm">
+                        <p className="font-medium text-foreground text-sm">
                           Voluntário
                         </p>
-                        <p className="text-gray-500 text-xs">
+                        <p className="text-muted-foreground text-xs">
                           Marque se este membro pode servir em ministérios
                         </p>
                       </div>
                       <span
                         className={cn(
                           'relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors',
-                          field.value ? 'bg-blue-600' : 'bg-gray-200',
+                          field.value ? 'bg-blue-600' : 'bg-muted',
                         )}
                       >
                         <span
@@ -508,7 +508,7 @@ export function CreateMemberModal({
                 />
 
                 {isVolunteer && (
-                  <div className="space-y-4 border-gray-100 border-t px-4 py-4">
+                  <div className="space-y-4 border-t px-4 py-4">
                     <Controller
                       name="ministry_ids"
                       control={control}
@@ -545,29 +545,29 @@ export function CreateMemberModal({
               </div>
 
               {/* Unavailability collapsible section */}
-              <div className="overflow-hidden rounded-lg border border-gray-200">
+              <div className="overflow-hidden rounded-lg border">
                 <button
                   type="button"
                   onClick={() => setUnavailabilityOpen((v) => !v)}
-                  className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-gray-50"
+                  className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-muted/50"
                 >
                   <div>
-                    <p className="font-medium text-gray-800 text-sm">
+                    <p className="font-medium text-foreground text-sm">
                       Indisponibilidade
                     </p>
-                    <p className="text-gray-500 text-xs">
+                    <p className="text-muted-foreground text-xs">
                       Período em que o membro não poderá servir
                     </p>
                   </div>
                   {unavailabilityOpen ? (
-                    <ChevronUp className="h-4 w-4 shrink-0 text-gray-400" />
+                    <ChevronUp className="h-4 w-4 shrink-0 text-muted-foreground" />
                   ) : (
-                    <ChevronDown className="h-4 w-4 shrink-0 text-gray-400" />
+                    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />
                   )}
                 </button>
 
                 {unavailabilityOpen && (
-                  <div className="space-y-4 border-gray-100 border-t px-4 py-4">
+                  <div className="space-y-4 border-t px-4 py-4">
                     <div className="flex flex-wrap gap-2">
                       <Button
                         type="button"
@@ -607,7 +607,7 @@ export function CreateMemberModal({
                     </div>
 
                     {unavailabilityFields.length === 0 ? (
-                      <p className="text-gray-400 text-xs">
+                      <p className="text-muted-foreground text-xs">
                         Nenhuma indisponibilidade cadastrada.
                       </p>
                     ) : (
@@ -618,16 +618,16 @@ export function CreateMemberModal({
                           return (
                             <div
                               key={u.id}
-                              className="rounded-lg border border-gray-200 bg-gray-50 p-3"
+                              className="rounded-lg border bg-muted/30 p-3"
                             >
                               <div className="mb-3 flex items-center justify-between">
-                                <p className="font-medium text-gray-800 text-sm">
+                                <p className="font-medium text-foreground text-sm">
                                   {isPeriod ? 'Período' : 'Recorrente'}
                                 </p>
                                 <button
                                   type="button"
                                   onClick={() => removeUnavailability(index)}
-                                  className="rounded p-1 text-gray-400 hover:bg-red-50 hover:text-red-500"
+                                  className="rounded p-1 text-muted-foreground hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-950/30"
                                   aria-label="Remover indisponibilidade"
                                 >
                                   <Trash2 className="h-4 w-4" />

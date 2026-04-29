@@ -19,6 +19,9 @@ export interface Cell {
   church_id: string
   name: string
   leader_id: string
+  leader_ids?: string[]
+  primary_leader_id?: string
+  member_ids?: string[]
   meeting_day: string
   meeting_time: string
   address?: string

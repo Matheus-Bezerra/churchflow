@@ -84,8 +84,8 @@ export default function SchedulesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="font-bold text-2xl text-gray-900">Escalas</h2>
-          <p className="mt-1 text-gray-500 text-sm">
+          <h2 className="font-bold text-2xl text-foreground">Escalas</h2>
+          <p className="mt-1 text-muted-foreground text-sm">
             Gerencie as escalas de voluntários
           </p>
         </div>
@@ -101,7 +101,7 @@ export default function SchedulesPage() {
       <CreateScheduleModal open={createOpen} onOpenChange={setCreateOpen} />
 
       {/* Stats */}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatsCard
           title="Total"
           value={schedules.length}
@@ -142,7 +142,7 @@ export default function SchedulesPage() {
             SCHEDULE_STATUS_FILTER_LABELS[String(v)] ?? String(v)
           }
         >
-          <SelectTrigger className="w-44 bg-white">
+          <SelectTrigger className="w-44 bg-background">
             <SelectValue placeholder="Filtrar por status" />
           </SelectTrigger>
           <SelectContent>
@@ -161,7 +161,7 @@ export default function SchedulesPage() {
               : (eventOptions[String(value)] ?? String(value))
           }
         >
-          <SelectTrigger className="w-56 bg-white">
+          <SelectTrigger className="w-56 bg-background">
             <SelectValue placeholder="Filtrar por evento" />
           </SelectTrigger>
           <SelectContent>
@@ -182,7 +182,7 @@ export default function SchedulesPage() {
               : (ministryOptions[String(value)] ?? String(value))
           }
         >
-          <SelectTrigger className="w-56 bg-white">
+          <SelectTrigger className="w-56 bg-background">
             <SelectValue placeholder="Filtrar por ministério" />
           </SelectTrigger>
           <SelectContent>
@@ -196,13 +196,13 @@ export default function SchedulesPage() {
             )}
           </SelectContent>
         </Select>
-        <span className="text-gray-400 text-sm">
+        <span className="text-muted-foreground text-sm">
           {filtered.length} escala(s)
         </span>
       </div>
 
       {isLoading ? (
-        <div className="rounded-xl border border-gray-200 bg-white py-12 text-center text-gray-400">
+        <div className="rounded-xl border py-12 text-center text-muted-foreground">
           Carregando escalas...
         </div>
       ) : (

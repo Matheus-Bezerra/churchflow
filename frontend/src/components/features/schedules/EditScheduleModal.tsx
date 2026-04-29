@@ -91,12 +91,12 @@ export function EditScheduleModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="flex max-h-[90dvh] max-w-2xl flex-col gap-0 overflow-hidden p-0 sm:max-w-3xl">
-        <DialogHeader className="shrink-0 border-gray-100 border-b px-6 pt-6 pb-4">
-          <DialogTitle className="font-bold text-gray-900 text-xl">
+        <DialogHeader className="shrink-0 border-b px-6 pt-6 pb-4">
+          <DialogTitle className="font-bold text-foreground text-xl">
             Editar escala
           </DialogTitle>
           {schedule && (
-            <p className="text-gray-500 text-sm">
+            <p className="text-muted-foreground text-sm">
               {ministry?.name ?? schedule.ministry_name} ·{' '}
               {new Date(`${schedule.event_occurrence_date}T00:00:00`).toLocaleDateString(
                 'pt-BR',
@@ -108,7 +108,7 @@ export function EditScheduleModal({
         <div className="flex-1 space-y-5 overflow-y-auto px-6 py-5">
           {/* Volunteers */}
           <div>
-            <p className="mb-2 font-medium text-gray-900 text-sm">Voluntários</p>
+            <p className="mb-2 font-medium text-foreground text-sm">Voluntários</p>
             <div className="space-y-2">
               {volunteers.map((volunteer, index) => (
                 <div
@@ -186,7 +186,7 @@ export function EditScheduleModal({
           </Field>
         </div>
 
-        <DialogFooter className="shrink-0 border-gray-100 border-t px-6 pt-4 pb-6">
+        <DialogFooter className="shrink-0 border-t px-6 pt-4 pb-6">
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancelar
           </Button>
